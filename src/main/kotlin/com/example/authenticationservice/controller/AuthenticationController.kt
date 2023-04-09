@@ -35,11 +35,11 @@ class AuthenticationController(
     @PostMapping("/register")
     fun registerUser(@Valid @RequestBody registerUserRequest: RegisterUserRequest): ResponseEntity<Void> {
         val token = authenticationService.registerUser(registerUserRequest)
-        emailSenderService.sendEmail(
+        /*emailSenderService.sendEmail(
             "${registerUserRequest.email}",
             "Email de confirmação",
             "http://localhost:8080/api/register/${registerUserRequest.email}/${token}"
-        )
+        )*/
 
         return ResponseEntity.status(201).build()
     }
@@ -62,11 +62,11 @@ class AuthenticationController(
     @PostMapping("/password_reset")
     fun requestPasswordReset(@Valid @RequestBody passwordResetRequest: PasswordResetRequest): ResponseEntity<Void> {
         val resetToken = authenticationService.requestPasswordReset(passwordResetRequest.email)
-        emailSenderService.sendEmail(
+        /*emailSenderService.sendEmail(
             "${passwordResetRequest.email}",
             "Código para a troca da senha",
             "${resetToken}"
-        )
+        )*/
 
         return ResponseEntity.status(200).build()
     }
