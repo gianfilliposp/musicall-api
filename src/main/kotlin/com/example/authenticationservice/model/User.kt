@@ -81,4 +81,5 @@ data class User(
             password = "",
             confirmationToken = ""
     )
+
 }
