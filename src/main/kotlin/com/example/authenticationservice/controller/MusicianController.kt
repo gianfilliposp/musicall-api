@@ -9,6 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import java.util.HashMap
 
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+
 @RestController
 @RequestMapping("/msc")
 class MusicianController {
