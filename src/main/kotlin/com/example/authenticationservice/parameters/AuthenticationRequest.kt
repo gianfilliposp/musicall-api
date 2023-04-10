@@ -4,6 +4,7 @@ import com.example.authenticationservice.dto.TypeUserDto
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 class AuthenticationRequest(
@@ -11,7 +12,7 @@ class AuthenticationRequest(
         val email: String,
         @JsonProperty("password") @field:NotBlank @field:Size(min = 8, max = 15)
         var password: String,
-        @JsonProperty("type") @field:NotBlank @field:Size(min = 8, max = 15)
+        @JsonProperty("type") @field:NotNull
         val type : TypeUserDto
 ) {
 

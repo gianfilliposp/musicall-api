@@ -16,10 +16,10 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.util.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
+import com.example.authenticationservice.model.User
+import org.springframework.security.core.userdetails.User as UserS
 import org.springframework.web.server.ResponseStatusException
 import java.lang.reflect.Type
-
 
 @Component
 class JwtTokenProvider {
@@ -37,9 +37,10 @@ class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKeyFor(SignatureAlgorithm.HS256).toString().toByteArray())
     }
 
-    fun createToken(username: String, typeUser : TypeUserDto): String {
-        val claims = Jwts.claims().setSubject(username)
+    fun createToken(user : User, typeUser : TypeUserDto): String {
+        val claims = Jwts.claims().setSubject(user.email)
         claims["type"] = typeUser
+        claims["id"] = user.id
         val now = Date()
         val validity = Date(now.getTime() + validityInMilliseconds)
         return Jwts.builder()
@@ -59,7 +60,7 @@ class JwtTokenProvider {
         val authStrings = scopesString.split(",".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
 
         val authorities = authStrings.map { SimpleGrantedAuthority(it) }
-        val principal = User(email, "", authorities)
+        val principal = UserS(email, "", authorities)
         return UsernamePasswordAuthenticationToken(principal, null, authorities)
     }
 
@@ -69,6 +70,10 @@ class JwtTokenProvider {
 
     fun getEmail(token : String): String {
         return parseJwt(token).subject
+    }
+
+    fun getId(token : String): String {
+        return parseJwt(token)["id"].toString()
     }
 
     fun getType(token : String): TypeUserDto {
