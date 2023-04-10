@@ -3,6 +3,7 @@ package com.example.authenticationservice.model
 import com.example.authenticationservice.dto.TypeUserDto
 import com.example.authenticationservice.parameters.RegisterUserRequest
 import org.mindrot.jbcrypt.BCrypt
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -25,7 +26,7 @@ data class User(
         val cpf: String,
 
         @Column(nullable = false)
-        val birthDate: String,
+        val birthDate: LocalDate,
 
         @Column(nullable = false, unique = true)
         val telephone: String,
@@ -73,7 +74,7 @@ data class User(
             name = "",
             lastName = "",
             cpf = "",
-            birthDate = "",
+            birthDate = LocalDate.now(),
             telephone = "",
             cep = "",
             address = "",
@@ -81,5 +82,4 @@ data class User(
             password = "",
             confirmationToken = ""
     )
-
 }

@@ -52,7 +52,7 @@ class AuthenticationController(
    }
 
     @PostMapping("/login")
-    fun login(@RequestBody data: AuthenticationRequest): ResponseEntity<*> {
+    fun login(@RequestBody @Valid data: AuthenticationRequest): ResponseEntity<*> {
         val model = authenticationService.login(data.email, data.password, data.type)
 
         return ResponseEntity.ok(model)

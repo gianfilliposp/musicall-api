@@ -22,7 +22,7 @@ class AuthenticationService(
     internal var jwtTokenProvider: JwtTokenProvider? = null
 
     fun registerUser(registerUserRequest: RegisterUserRequest) : String {
-        if (userRepository.existsByEmail(registerUserRequest.email)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already registered", null);
+        if (userRepository.existsByEmailOrCpfOrTelephone(registerUserRequest.email, registerUserRequest.cpf, registerUserRequest.telephone)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already registered", null);
         val token = UUID.randomUUID().toString();
         userRepository.save(User(registerUserRequest, token))
 
@@ -67,10 +67,10 @@ class AuthenticationService(
     }
 
     fun login(email: String, password: String, type : TypeUserDto): HashMap<Any, Any> {
-        val user = userRepository.getUserByEmailAndType(email, type) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist")
+        val user : User = userRepository.getUserByEmailAndType(email, type) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist")
         if (!user.isConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User isn't confirmed")
         if (!BCrypt.checkpw(password, user.password)) throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied")
-        val token = jwtTokenProvider!!.createToken(email, type)
+        val token = jwtTokenProvider!!.createToken(user, type)
         val model = HashMap<Any, Any>()
         model["email"] = email
         model["token"] = token
