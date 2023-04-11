@@ -31,12 +31,6 @@ data class User(
         @Column(nullable = false, unique = true)
         val telephone: String,
 
-        @Column(nullable = false)
-        val cep: String,
-
-        @Column(nullable = false)
-        val address: String,
-
         @Column(nullable = false, unique = true)
         val email: String,
 
@@ -60,8 +54,6 @@ data class User(
             cpf = registerUserRequest.cpf,
             birthDate = registerUserRequest.birthDate,
             telephone = registerUserRequest.telephone,
-            cep = registerUserRequest.cep,
-            address = registerUserRequest.address,
             email = registerUserRequest.email,
             password = BCrypt.hashpw(registerUserRequest.password, BCrypt.gensalt()),
             confirmationToken = token
@@ -76,8 +68,6 @@ data class User(
             cpf = "",
             birthDate = LocalDate.now(),
             telephone = "",
-            cep = "",
-            address = "",
             email = "",
             password = "",
             confirmationToken = ""
