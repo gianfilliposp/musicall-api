@@ -24,9 +24,9 @@ class OrganizerController (
 ) {
     @PostMapping("/event")
     fun createEvent(req : HttpServletRequest, @Valid @RequestBody createEventRequest: CreateEventRequest) : ResponseEntity<EventDto> {
-        val event = eventService.createEvent(createEventRequest, req)
+        val eventDto = eventService.createEvent(createEventRequest, req)
 
-        return ResponseEntity.status(201).body(event)
+        return ResponseEntity.status(201).body(eventDto)
     }
 
     /*

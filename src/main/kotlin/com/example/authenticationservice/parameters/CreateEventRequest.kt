@@ -13,12 +13,10 @@ import javax.validation.constraints.*
 data class CreateEventRequest (
         @JsonProperty("name") @field:NotBlank val name: String,
         @JsonProperty("local") @field:NotBlank val local: String,
-
         @JsonProperty("eventDate")
         @field:DateTimeFormat(pattern = "yyyy/MM/dd")
         @field:Future(message = "Event date must be in the future")
         val eventDate: LocalDate,
-
         @JsonProperty("durationHours") @field:NotNull @field:Positive val durationHours: Int,
         @JsonProperty("salary") @field:NotNull @field:Positive val salary : Float
 ) {
