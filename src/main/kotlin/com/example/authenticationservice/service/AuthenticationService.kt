@@ -17,9 +17,7 @@ class AuthenticationService(
         /*@Autowired @Qualifier("InMemoryDB") private val usersDao: UsersDao,*/
         @Autowired private val userRepository: UserRepository
 ) {
-
-    @Autowired
-    internal var jwtTokenProvider: JwtTokenProvider? = null
+    @Autowired internal var jwtTokenProvider: JwtTokenProvider? = null
 
     fun registerUser(registerUserRequest: RegisterUserRequest) : String {
         if (userRepository.existsByEmailOrCpfOrTelephone(registerUserRequest.email, registerUserRequest.cpf, registerUserRequest.telephone)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already registered", null);

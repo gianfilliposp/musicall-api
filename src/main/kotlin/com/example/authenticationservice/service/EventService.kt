@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletRequest
 
 @Service
 class EventService (
-    @Autowired private val eventRepository: EventRepository,
-    @Autowired private val eventMapper: EventMapper,
-    @Autowired private val jwtTokenProvider: JwtTokenProvider
+        @Autowired private val eventRepository: EventRepository,
+        @Autowired private val eventMapper: EventMapper,
+        @Autowired private val jwtTokenProvider: JwtTokenProvider
 ) {
     fun createEvent(createEventRequest: CreateEventRequest, req : HttpServletRequest) : EventDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")

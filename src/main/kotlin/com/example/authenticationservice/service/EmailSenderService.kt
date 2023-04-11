@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class EmailSenderService (
-    @Autowired
-    private val mailSender : JavaMailSender
+    @Autowired private val mailSender : JavaMailSender
 ) {
     fun sendEmail(
         toEmail : String,

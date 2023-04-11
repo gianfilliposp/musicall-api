@@ -9,5 +9,4 @@ import javax.validation.constraints.*
 data class RegisterMusicianRequest (
     @JsonProperty("description") @field:NotBlank val description: String,
     @JsonProperty("cep") @field:NotBlank val cep: String
-
 )
