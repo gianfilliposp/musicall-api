@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 
 interface MusicianRepository : JpaRepository<Musician, Long> {
+    fun existsByfkUser(fkUser: Long):Boolean
 }

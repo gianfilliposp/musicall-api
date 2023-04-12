@@ -1,16 +1,13 @@
 package com.example.authenticationservice.controller
 
 import com.example.authenticationservice.dto.MusicianDto
+import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
-import com.example.authenticationservice.parameters.RegisterUserRequest
 import com.example.authenticationservice.service.MusicianService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import java.util.HashMap
 
@@ -35,6 +32,10 @@ class MusicianController (
         )*/
 
         return ResponseEntity.status(201).body(musicianDto)
+    }
+
+    fun registerInstrument(req: HttpServletRequest, @Valid @RequestBody registerInstrumentRequest: RegisterInstrumentRequest){
+        val instrumentDto = musicianService.registerInstrument(registerInstrumentRequest, req)
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
