@@ -34,6 +34,7 @@ class MusicianController (
         return ResponseEntity.status(201).body(musicianDto)
     }
 
+    @PostMapping("/instrument")
     fun registerInstrument(req: HttpServletRequest, @Valid @RequestBody registerInstrumentRequest: RegisterInstrumentRequest){
         val instrumentDto = musicianService.registerInstrument(registerInstrumentRequest, req)
     }

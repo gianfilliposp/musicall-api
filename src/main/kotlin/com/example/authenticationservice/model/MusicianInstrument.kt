@@ -14,6 +14,7 @@ class MusicianInstrument
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Musician::class)
     @JoinColumn(name = "musician_id")
     val fkMusician: Long,
+
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Instrument::class)
     @JoinColumn(name = "instrument_id")
     val fkInstrument: Long
