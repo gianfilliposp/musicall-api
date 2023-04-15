@@ -11,11 +11,11 @@ data class MusicianInstrument (
     val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "musician_id")
+    @JoinColumn(name = "musician_id", nullable = false)
     val musician : Musician,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "instrument_id")
+    @JoinColumn(name = "instrument_id", nullable = false)
     val instrument: Instrument
 ) {
 }

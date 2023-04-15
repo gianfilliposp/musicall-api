@@ -14,6 +14,7 @@ data class User(
         val id: Long = 0,
 
         @Enumerated(EnumType.STRING)
+        @Column(nullable = false)
         val type: TypeUserDto,
 
         @Column(nullable = false)

@@ -16,7 +16,7 @@ import java.util.HashMap
 
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/usr")
 class AuthenticatedOnlyController {
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun home(@AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<*> {
@@ -24,8 +24,6 @@ class AuthenticatedOnlyController {
 
         return ok("{\"response\":\"Logged in as ${userDetails.username}\"}")
     }
-
-
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidJwtAuthenticationException::class)
     fun handleValidationExceptions(ex: InvalidJwtAuthenticationException): Map<String, String> {
