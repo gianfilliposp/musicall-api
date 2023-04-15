@@ -9,4 +9,6 @@ interface UserRepository : JpaRepository<User, Long> {
     fun existsByEmailOrCpfOrTelephone(email: String, cpf: String, telephone: String): Boolean
     fun getUserByEmail(email : String) : User?
     fun getUserByEmailAndType(email : String, type : TypeUserDto) : User?
+
+    fun getById(id : Long) : User?
 }

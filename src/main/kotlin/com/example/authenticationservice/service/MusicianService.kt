@@ -8,6 +8,7 @@ import com.example.authenticationservice.dto.InstrumentsDto
 import com.example.authenticationservice.mapper.MusicianMapper
 import com.example.authenticationservice.model.Musician
 import com.example.authenticationservice.model.MusicianInstrument
+import com.example.authenticationservice.model.User
 import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
 import com.example.authenticationservice.security.JwtTokenProvider
@@ -28,9 +29,11 @@ class MusicianService (
     fun registerMusician(registerMusicianRequest: RegisterMusicianRequest, req : HttpServletRequest) : MusicianDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
-        if(!userRepository.existsById(id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "User NotFound")
+        if(musicianRepository.existsByFkUser(id)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already exists")
+        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found")
 
-        val musician = Musician(registerMusicianRequest, id)
+        val musician = Musician(registerMusicianRequest, user)
+
         musicianRepository.save(musician)
 
         return musicianMapper.toDto(musician)
@@ -39,11 +42,16 @@ class MusicianService (
     fun registerInstrument(registerInstrumentRequest: RegisterInstrumentRequest, req: HttpServletRequest): InstrumentsDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
-     if (!musicianRepository.existsByfkUser(id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Instrument NotFound")
+        val fkMusician : Long? = musicianRepository.findIdByFkUser(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as musician")
+        val instrumentsOfUser = musicianInstrumentRepository.findAll()
 
+        println(instrumentsOfUser)
 
-        val musicianInstruments:List<MusicianInstrument> = registerInstrumentRequest.fkInstrument.map { MusicianInstrument(fkInstrument = it, fkMusician = id) }
-        musicianInstrumentRepository.saveAll(musicianInstruments)
-        return InstrumentsDto(registerInstrumentRequest.fkInstrument)
+        return InstrumentsDto(emptyList())
+//        registerInstrumentRequest.fkInstrument!!.forEach { if(instrumentsOfUser.contains(it)) throw ResponseStatusException(HttpStatus.CONFLICT, "Instrument already registered for this user") }
+//
+//        val musicianInstruments:List<MusicianInstrument> = registerInstrumentRequest.fkInstrument.map { MusicianInstrument(fkInstrument = it, fkMusician = id) }
+//        musicianInstrumentRepository.saveAll(musicianInstruments)
+//        return InstrumentsDto(registerInstrumentRequest.fkInstrument!!)
     }
 }

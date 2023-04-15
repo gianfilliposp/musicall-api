@@ -20,7 +20,7 @@ class AuthenticationService(
     @Autowired internal var jwtTokenProvider: JwtTokenProvider? = null
 
     fun registerUser(registerUserRequest: RegisterUserRequest) : String {
-        if (userRepository.existsByEmailOrCpfOrTelephone(registerUserRequest.email, registerUserRequest.cpf, registerUserRequest.telephone)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already registered", null);
+        if (userRepository.existsByEmailOrCpfOrTelephone(registerUserRequest.email!!, registerUserRequest.cpf!!, registerUserRequest.telephone!!)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already registered", null);
         val token = UUID.randomUUID().toString();
         userRepository.save(User(registerUserRequest, token))
 
