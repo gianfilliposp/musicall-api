@@ -1,5 +1,6 @@
 package com.example.authenticationservice.controller
 
+import com.example.authenticationservice.dto.InstrumentsDto
 import com.example.authenticationservice.dto.MusicianDto
 import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
@@ -39,8 +40,10 @@ class MusicianController (
     }
 
     @PostMapping("/instrument")
-    fun registerInstrument(req: HttpServletRequest, @Valid @RequestBody registerInstrumentRequest: RegisterInstrumentRequest){
+    fun registerInstrument(req: HttpServletRequest, @Valid @RequestBody registerInstrumentRequest: RegisterInstrumentRequest): ResponseEntity<List<InstrumentsDto>> {
         val instrumentDto = musicianService.registerInstrument(registerInstrumentRequest, req)
+
+        return ResponseEntity.status(201).body(instrumentDto)
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

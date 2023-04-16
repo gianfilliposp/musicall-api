@@ -11,7 +11,7 @@ data class Musician(
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "user_id", nullable = false)
-    val fkUser: User,
+    val user: User,
 
     @Column(nullable = false)
     val description: String,
@@ -26,14 +26,13 @@ data class Musician(
     val eventJob: MutableList<EventJob> = mutableListOf()
 ){
     constructor() : this(
-        fkUser = User(),
+        user = User(),
         description = "",
         cep = ""
-
     )
 
     constructor(registerMusicianRequest: RegisterMusicianRequest, user: User) : this(
-        fkUser = user,
+        user = user,
         description = registerMusicianRequest.description!!,
         cep = registerMusicianRequest.cep!!
     )

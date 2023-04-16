@@ -18,4 +18,8 @@ data class MusicianInstrument (
     @JoinColumn(name = "instrument_id", nullable = false)
     val instrument: Instrument
 ) {
+    constructor() : this(
+            musician = Musician(),
+            instrument = Instrument()
+    )
 }
