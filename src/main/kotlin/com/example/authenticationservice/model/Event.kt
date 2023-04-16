@@ -30,7 +30,7 @@ data class Event
         @Column(nullable = false)
         val salary : Float,
 
-        @OneToMany(mappedBy = "event")
+        @OneToMany(mappedBy = "event", cascade = [CascadeType.ALL], orphanRemoval = true)
         val eventJob: MutableList<EventJob> = mutableListOf()
     ) {
         @Column(nullable = false)

@@ -41,7 +41,7 @@ data class User(
         @Column(nullable = false)
         var confirmationToken: String,
 
-        @OneToMany(mappedBy = "user")
+        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
         val events: MutableList<Event> = mutableListOf()
 ) {
     var numberOfEvents = 0

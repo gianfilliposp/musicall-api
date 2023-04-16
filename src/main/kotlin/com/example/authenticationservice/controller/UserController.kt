@@ -17,10 +17,10 @@ import javax.validation.Valid
 class UserController (
         @Autowired private val userService : UserService
 ) {
-//    @DeleteMapping
-//    fun deleteUser(req: HttpServletRequest, @RequestBody @Valid deleteUserRequest: DeleteUserRequest) : ResponseEntity<Void> {
-//        val userDto = userService.deleteUser(req, deleteUserRequest)
-//
-//        return ResponseEntity.status(201).build()
-//    }
+    @DeleteMapping
+    fun deleteUser(req: HttpServletRequest, @RequestBody @Valid deleteUserRequest: DeleteUserRequest) : ResponseEntity<Void> {
+        val userDto = userService.deleteUser(req, deleteUserRequest)
+
+        return ResponseEntity.status(200).build()
+    }
 }

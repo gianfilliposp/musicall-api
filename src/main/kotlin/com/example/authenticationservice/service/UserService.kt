@@ -18,23 +18,13 @@ class UserService (
         @Autowired private val userRepository: UserRepository,
         @Autowired private val jwtTokenProvider: JwtTokenProvider
 ) {
-//    fun deleteUser(req: HttpServletRequest, deleteUserRequest: DeleteUserRequest) {
-//        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
-//        val id = jwtTokenProvider.getId(token).toLong()
-//        val user = userRepository.getById(id)?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-//        if (!BCrypt.checkpw(deleteUserRequest.password!!, user.password)) throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied")
-//
-//       if (user.type == TypeUserDto.MSC) deleteMusician(user)
-//       if (user.type == TypeUserDto.ORG) deleteOrganizer(user)
-//
-//        userRepository.delete(user)
-//    }
-//    fun deleteOrganizer(user: User) : Void {
-//        userRepository.delete(user)
-//    }
-//
-//    fun deleteMusician(user: User) : Void {
-//
-//    }
-//
+    fun deleteUser(req: HttpServletRequest, deleteUserRequest: DeleteUserRequest) {
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+        val user = userRepository.getById(id)?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        if (!BCrypt.checkpw(deleteUserRequest.password!!, user.password)) throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied")
+
+        userRepository.delete(user)
+    }
+
 }

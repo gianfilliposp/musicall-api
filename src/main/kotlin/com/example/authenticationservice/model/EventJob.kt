@@ -27,4 +27,10 @@ data class EventJob (
             instrument = instrument,
             musician = null
     )
+
+    constructor() : this (
+            event = Event(),
+            instrument = Instrument(),
+            musician = null
+    )
 }

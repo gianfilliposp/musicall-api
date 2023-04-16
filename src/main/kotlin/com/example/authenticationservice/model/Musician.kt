@@ -19,10 +19,10 @@ data class Musician(
     @Column(nullable = false)
     val cep: String,
 
-    @OneToMany(mappedBy = "musician")
+    @OneToMany(mappedBy = "musician", cascade = [CascadeType.ALL], orphanRemoval = true)
     val musicianInstruments: MutableList<MusicianInstrument> = mutableListOf(),
 
-    @OneToMany(mappedBy = "musician")
+    @OneToMany(mappedBy = "musician", cascade = [CascadeType.ALL], orphanRemoval = true)
     val eventJob: MutableList<EventJob> = mutableListOf()
 ){
     constructor() : this(
