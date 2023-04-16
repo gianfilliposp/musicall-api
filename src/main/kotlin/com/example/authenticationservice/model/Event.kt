@@ -16,19 +16,16 @@ data class Event
         val user: User,
 
         @Column(nullable = false)
-        val name: String,
+        var name: String,
 
         @Column(nullable = false)
-        val local: String,
+        var local: String,
 
         @Column(nullable = false)
-        val eventDate: LocalDate,
+        var eventDate: LocalDate,
 
         @Column(nullable = false)
-        val durationHours : Int,
-
-        @Column(nullable = false)
-        val salary : Float,
+        var durationHours : Int,
 
         @OneToMany(mappedBy = "event", cascade = [CascadeType.ALL], orphanRemoval = true)
         val eventJob: MutableList<EventJob> = mutableListOf()
@@ -40,11 +37,10 @@ data class Event
             createEventRequest: CreateEventRequest, creator: User
         ) : this(
                 user = creator,
-                name =  createEventRequest.name,
-                local =  createEventRequest.local,
-                eventDate =  createEventRequest.eventDate,
-                durationHours =  createEventRequest.durationHours,
-                salary =  createEventRequest.salary
+                name =  createEventRequest.name!!,
+                local =  createEventRequest.local!!,
+                eventDate =  createEventRequest.eventDate!!,
+                durationHours =  createEventRequest.durationHours!!
         )
 
         constructor() :this (
@@ -52,7 +48,6 @@ data class Event
                 name =  "",
                 local =  "",
                 eventDate =  LocalDate.now(),
-                durationHours =  0,
-                salary =  0f
+                durationHours =  0
         )
     }
