@@ -5,4 +5,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-data class PasswordResetRequest(@JsonProperty("email") @field:NotNull @field:Email @field:NotBlank val email: String)
+data class EmailResetRequest (
+    @JsonProperty("email") @field:NotNull @field:NotBlank @field:Email val email: String?
+) {
+}

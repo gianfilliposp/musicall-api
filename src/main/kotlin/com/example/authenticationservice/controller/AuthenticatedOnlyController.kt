@@ -11,17 +11,26 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import java.util.HashMap
 
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/usr")
 class AuthenticatedOnlyController {
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun home(@AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<*> {
+        throw ResponseStatusException(HttpStatus.CONFLICT, "testeee")
+
         return ok("{\"response\":\"Logged in as ${userDetails.username}\"}")
     }
-
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(InvalidJwtAuthenticationException::class)
+    fun handleValidationExceptions(ex: InvalidJwtAuthenticationException): Map<String, String> {
+        val errors = HashMap<String, String>()
+        errors["error"] = ex.message.orEmpty()
+        return errors
+    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(ex: MethodArgumentNotValidException): Map<String, String> {

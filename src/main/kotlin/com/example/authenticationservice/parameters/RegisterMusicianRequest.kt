@@ -7,6 +7,6 @@ import java.time.LocalDate
 import javax.validation.constraints.*
 
 data class RegisterMusicianRequest (
-    @JsonProperty("description") @field:NotBlank val description: String,
-    @JsonProperty("cep") @field:NotBlank val cep: String
+    @JsonProperty("description") @field:NotNull @field:NotBlank val description: String?,
+    @JsonProperty("cep") @field:NotNull @field:NotBlank val cep: String?
 )

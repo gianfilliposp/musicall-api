@@ -28,8 +28,6 @@ class JwtTokenProvider {
     @Value("\${security.jwt.token.expire-length:3600000}")
     private val validityInMilliseconds: Long = 3600000 // 1h
     @Autowired
-    private val usersDao: UsersDao? = null
-    @Autowired
     private val userRepository : UserRepository? = null
 
     @PostConstruct
@@ -93,7 +91,7 @@ class JwtTokenProvider {
             val claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             val typeToken = getType(token).toString()
 
-            if (typeToken != typeUrl.toUpperCase()) throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+            if ((typeUrl == "msc" || typeUrl == "org") && typeToken != typeUrl.toUpperCase()) throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
 
             return !claims.body.expiration.before(Date())
         } catch (e: JwtException) {

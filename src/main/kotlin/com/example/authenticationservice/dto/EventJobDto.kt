@@ -1,14 +1,17 @@
 package com.example.authenticationservice.dto
 
-import java.time.LocalDate
+import com.example.authenticationservice.model.EventJob
 
 data class EventJobDto (
-    val id: Long,
-    val creatorEventId: Long,
-    val name: String,
-    val local: String,
-    val eventDate: LocalDate,
-    val durationHours: Int,
-    val salary : Float
+        val id: Long,
+        val fkEvento : Long,
+        val instrumentName : String,
+        val isAvailable: Boolean?
 ) {
+    constructor(eventJob: EventJob): this(
+            id = eventJob.id,
+            fkEvento = eventJob.event.id,
+            instrumentName = eventJob.instrument.name,
+            isAvailable = eventJob.musician == null
+    )
 }

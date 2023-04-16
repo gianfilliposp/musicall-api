@@ -20,7 +20,7 @@ class AuthenticationService(
     @Autowired internal var jwtTokenProvider: JwtTokenProvider? = null
 
     fun registerUser(registerUserRequest: RegisterUserRequest) : String {
-        if (userRepository.existsByEmailOrCpfOrTelephone(registerUserRequest.email, registerUserRequest.cpf, registerUserRequest.telephone)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already registered", null);
+        if (userRepository.existsByEmailOrCpfOrTelephone(registerUserRequest.email!!, registerUserRequest.cpf!!, registerUserRequest.telephone!!)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already registered", null);
         val token = UUID.randomUUID().toString();
         userRepository.save(User(registerUserRequest, token))
 
@@ -33,6 +33,7 @@ class AuthenticationService(
         if (user.isConfirmed) throw ResponseStatusException(HttpStatus.CONFLICT, "User already confirmed")
         if (user.confirmationToken != token) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect confirmation token")
         user.isConfirmed = true
+        user.confirmationToken = ""
 
         userRepository.save(user)
     }

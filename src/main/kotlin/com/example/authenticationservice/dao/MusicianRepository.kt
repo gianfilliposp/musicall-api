@@ -7,4 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 
 interface MusicianRepository : JpaRepository<Musician, Long> {
+    fun existsByUser(user: User) : Boolean
+    fun findIdByUser(user: User): Long?
+
+    fun getByUser(user: User): Musician?
 }

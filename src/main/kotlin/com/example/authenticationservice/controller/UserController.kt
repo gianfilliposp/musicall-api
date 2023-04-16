@@ -1,49 +1,51 @@
 package com.example.authenticationservice.controller
 
-import com.example.authenticationservice.dto.InstrumentsDto
-import com.example.authenticationservice.dto.MusicianDto
-import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
-import com.example.authenticationservice.parameters.RegisterMusicianRequest
-import com.example.authenticationservice.service.MusicianService
+import com.example.authenticationservice.parameters.DeleteUserRequest
+import com.example.authenticationservice.parameters.EmailResetRequest
+import com.example.authenticationservice.parameters.SetEmailRequest
+import com.example.authenticationservice.service.UserService
+import com.sun.istack.NotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
 import java.util.HashMap
-
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
-
+import javax.validation.constraints.NotBlank
 
 @RestController
-@RequestMapping("/msc")
-class MusicianController (
-    @Autowired private val musicianService: MusicianService
+@RequestMapping("/usr")
+class UserController (
+        @Autowired private val userService : UserService
 ) {
-    @PostMapping("/register")
-    fun registerMusician(req : HttpServletRequest, @Valid @RequestBody registerMusicianRequest: RegisterMusicianRequest): ResponseEntity<MusicianDto> {
-        val musicianDto = musicianService.registerMusician(registerMusicianRequest, req)
+    @DeleteMapping
+    fun deleteUser(req: HttpServletRequest, @RequestBody @Valid deleteUserRequest: DeleteUserRequest) : ResponseEntity<Void> {
+        val userDto = userService.deleteUser(req, deleteUserRequest)
+
+        return ResponseEntity.status(200).build()
+    }
+    @PostMapping("/change-email")
+    fun requestEmailReset(req: HttpServletRequest, @Valid @RequestBody setEmailRequest: EmailResetRequest): ResponseEntity<Void> {
+        val resetToken = userService.requestEmailReset(req, setEmailRequest)
         /*emailSenderService.sendEmail(
-            "${registerUserRequest.email}",
-            "Email de confirmação",
-            "http://localhost:8080/api/register/${registerUserRequest.email}/${token}"
+            "${setEmailRequest.email}",
+            "Código para troca de email",
+            "${resetToken}"
         )*/
 
-        return ResponseEntity.status(201).body(musicianDto)
+        return ResponseEntity.status(200).build()
     }
 
-    @PostMapping("/instrument")
-    fun registerInstrument(req: HttpServletRequest, @Valid @RequestBody registerInstrumentRequest: RegisterInstrumentRequest): ResponseEntity<List<InstrumentsDto>> {
-        val instrumentDto = musicianService.registerInstrument(registerInstrumentRequest, req)
+    @PutMapping("/change-email")
+    fun setNewEmail(req: HttpServletRequest, @Valid @NotBlank @NotNull @RequestBody setEmailRequest: SetEmailRequest): ResponseEntity<Void> {
+        userService.setNewEmail(req, setEmailRequest)
 
-        return ResponseEntity.status(201).body(instrumentDto)
+        return ResponseEntity.status(200).build()
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
