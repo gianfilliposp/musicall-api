@@ -11,6 +11,7 @@ import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.Instrument
 import com.example.authenticationservice.parameters.CreateEventJobRequest
 import com.example.authenticationservice.parameters.CreateEventRequest
+import com.example.authenticationservice.parameters.DeleteEventRequest
 import com.example.authenticationservice.security.JwtTokenProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -57,5 +58,14 @@ class OrganizerService (
        eventJobRepository.saveAll(eventJobs)
 
         return eventJobs.map{ EventJobDto(it) }
+    }
+
+    fun deleteEvent(req: HttpServletRequest, deleteEventRequest: DeleteEventRequest) {
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        val event = eventRepository.findByIdAndUserAndFinalized(deleteEventRequest.id!!, user, false) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find this event")
+
+        eventRepository.delete(event)
     }
 }

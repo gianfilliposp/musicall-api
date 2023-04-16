@@ -6,6 +6,7 @@ import com.example.authenticationservice.dto.EventJobDto
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.parameters.CreateEventJobRequest
 import com.example.authenticationservice.parameters.CreateEventRequest
+import com.example.authenticationservice.parameters.DeleteEventRequest
 import com.example.authenticationservice.service.OrganizerService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -35,6 +36,13 @@ class OrganizerController (
         val eventJobsDto : List<EventJobDto> = eventService.createEventJob(createEventJobRequest, req)
 
         return ResponseEntity.status(201).body(eventJobsDto)
+    }
+
+    @DeleteMapping("/event")
+    fun deleteEvent(req : HttpServletRequest, @Valid @RequestBody deleteEventRequest: DeleteEventRequest): ResponseEntity<Void> {
+        eventService.deleteEvent(req, deleteEventRequest)
+
+        return ResponseEntity.status(200).build()
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
