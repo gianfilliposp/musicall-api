@@ -33,7 +33,7 @@ data class User(
         val telephone: String,
 
         @Column(nullable = false, unique = true)
-        val email: String,
+        var email: String,
 
         @Column(nullable = false)
         var password: String,
@@ -52,6 +52,8 @@ data class User(
     var isConfirmed = false
     var isPasswordResetRequested = false
     var passwordResetToken = ""
+    var newEmail = ""
+
 
     constructor(
             registerUserRequest: RegisterUserRequest, token: String

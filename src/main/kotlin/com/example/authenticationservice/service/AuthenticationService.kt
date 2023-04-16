@@ -33,6 +33,7 @@ class AuthenticationService(
         if (user.isConfirmed) throw ResponseStatusException(HttpStatus.CONFLICT, "User already confirmed")
         if (user.confirmationToken != token) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect confirmation token")
         user.isConfirmed = true
+        user.confirmationToken = ""
 
         userRepository.save(user)
     }
