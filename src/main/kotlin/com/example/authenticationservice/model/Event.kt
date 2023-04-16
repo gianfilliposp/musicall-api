@@ -28,7 +28,10 @@ data class Event
         val durationHours : Int,
 
         @Column(nullable = false)
-        val salary : Float
+        val salary : Float,
+
+        @OneToMany(mappedBy = "event")
+        val eventJob: MutableList<EventJob> = mutableListOf()
     ) {
         @Column(nullable = false)
         val finalized = false

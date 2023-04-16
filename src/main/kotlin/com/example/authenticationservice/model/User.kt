@@ -40,6 +40,7 @@ data class User(
 
         @Column(nullable = false)
         var confirmationToken: String
+
 ) {
     var numberOfEvents = 0
     var isConfirmed = false

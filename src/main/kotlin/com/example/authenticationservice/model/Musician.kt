@@ -17,7 +17,13 @@ data class Musician(
     val description: String,
 
     @Column(nullable = false)
-    val cep: String
+    val cep: String,
+
+    @OneToMany(mappedBy = "musician")
+    val musicianInstruments: MutableList<MusicianInstrument> = mutableListOf(),
+
+    @OneToMany(mappedBy = "musician")
+    val eventJob: MutableList<EventJob> = mutableListOf()
 ){
     constructor() : this(
         fkUser = User(),

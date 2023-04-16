@@ -12,7 +12,13 @@ data class Instrument (
         val id: Long = 0,
 
         @Column(nullable = false)
-        val name: String
+        val name: String,
+
+        @OneToMany(mappedBy = "instrument")
+        val musicianInstruments: MutableList<MusicianInstrument> = mutableListOf(),
+
+        @OneToMany(mappedBy = "instrument")
+        val eventJob: MutableList<EventJob> = mutableListOf()
 ) {
     constructor (): this (
             name = ""
