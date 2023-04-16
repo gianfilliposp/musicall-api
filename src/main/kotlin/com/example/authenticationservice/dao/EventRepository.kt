@@ -7,5 +7,5 @@ import java.time.LocalDate
 
 interface EventRepository : JpaRepository<Event, Long> {
     abstract fun existsByEventDateAndFinalized(eventDate: LocalDate, finalized: Boolean): Boolean
-    abstract fun findByIdAndCreatorEventAndFinalized(id: Long, creatorEvent: User, finalized: Boolean): Event?
+    abstract fun findByIdAndUserAndFinalized(id: Long, user: User, finalized: Boolean): Event?
 }

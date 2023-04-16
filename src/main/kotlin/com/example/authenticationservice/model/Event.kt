@@ -13,7 +13,7 @@ data class Event
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn (name = "user_id", nullable = false)
-        val creatorEvent: User,
+        val user: User,
 
         @Column(nullable = false)
         val name: String,
@@ -39,7 +39,7 @@ data class Event
         constructor(
             createEventRequest: CreateEventRequest, creator: User
         ) : this(
-                creatorEvent = creator,
+                user = creator,
                 name =  createEventRequest.name,
                 local =  createEventRequest.local,
                 eventDate =  createEventRequest.eventDate,
@@ -48,7 +48,7 @@ data class Event
         )
 
         constructor() :this (
-                creatorEvent = User(),
+                user = User(),
                 name =  "",
                 local =  "",
                 eventDate =  LocalDate.now(),

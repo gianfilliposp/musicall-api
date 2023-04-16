@@ -39,8 +39,10 @@ data class User(
         var password: String,
 
         @Column(nullable = false)
-        var confirmationToken: String
+        var confirmationToken: String,
 
+        @OneToMany(mappedBy = "user")
+        val events: MutableList<Event> = mutableListOf()
 ) {
     var numberOfEvents = 0
     var isConfirmed = false

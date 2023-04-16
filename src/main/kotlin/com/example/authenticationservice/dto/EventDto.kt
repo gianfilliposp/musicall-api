@@ -19,7 +19,7 @@ data class EventDto(
 ) {
     constructor(event: Event) : this(
             id = event.id,
-            creatorEventId = UserDto(event.creatorEvent),
+            creatorEventId = UserDto(event.user),
             name = event.name,
             local = event.local,
             eventDate = event.eventDate,

@@ -43,7 +43,7 @@ class OrganizerService (
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
         val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        val event = eventRepository.findByIdAndCreatorEventAndFinalized(createEventJobRequest.fkEvent!!, user, false) ?: throw ResponseStatusException(HttpStatus.CONFLICT, "You cant create jobs for this event")
+        val event = eventRepository.findByIdAndUserAndFinalized(createEventJobRequest.fkEvent!!, user, false) ?: throw ResponseStatusException(HttpStatus.CONFLICT, "You cant create jobs for this event")
 
         val instruments = instrumentRepository.findAll()
         val instrumentMap : HashMap<Long, Instrument> = HashMap()
