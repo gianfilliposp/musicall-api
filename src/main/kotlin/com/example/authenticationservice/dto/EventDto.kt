@@ -1,6 +1,7 @@
 package com.example.authenticationservice.dto
 
 import com.example.authenticationservice.model.Event
+import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.User
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.format.annotation.DateTimeFormat
@@ -10,18 +11,20 @@ import javax.validation.constraints.NotBlank
 
 data class EventDto(
         val id: Long,
-        val creatorEventId: UserDto,
+        val creatorEventId: UserEventDto,
         val name: String,
-        val local: String,
+        val cep: String,
         val eventDate: LocalDate,
-        val durationHours: Int
+        val durationHours: Int,
+        val eventJobs: List<EventJobDto>
 ) {
     constructor(event: Event) : this(
             id = event.id,
-            creatorEventId = UserDto(event.user),
+            creatorEventId = UserEventDto(event.user),
             name = event.name,
-            local = event.local,
+            cep = event.cep,
             eventDate = event.eventDate,
-            durationHours = event.durationHours
+            durationHours = event.durationHours,
+            eventJobs = event.eventJob.map { EventJobDto(it) }
     )
 }

@@ -1,13 +1,11 @@
 package com.example.authenticationservice.service
 
-import com.example.authenticationservice.dao.InstrumentRepository
-import com.example.authenticationservice.dao.MusicianInstrumentRepository
-import com.example.authenticationservice.dao.MusicianRepository
-import com.example.authenticationservice.dao.UserRepository
+import com.example.authenticationservice.dao.*
+import com.example.authenticationservice.dto.EventDto
+import com.example.authenticationservice.dto.EventWithJobsDto
 import com.example.authenticationservice.dto.MusicianDto
 import com.example.authenticationservice.dto.InstrumentsDto
 import com.example.authenticationservice.mapper.MusicianMapper
-import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.Instrument
 import com.example.authenticationservice.model.Musician
 import com.example.authenticationservice.model.MusicianInstrument
@@ -18,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import java.time.LocalDate
 import javax.servlet.http.HttpServletRequest
+import kotlin.collections.HashMap
 
 @Service
 class MusicianService (
@@ -27,7 +27,8 @@ class MusicianService (
         @Autowired private val musicianRepository: MusicianRepository,
         @Autowired private val musicianMapper : MusicianMapper,
         @Autowired private val musicianInstrumentRepository: MusicianInstrumentRepository,
-        @Autowired private val instrumentRepository: InstrumentRepository
+        @Autowired private val instrumentRepository: InstrumentRepository,
+        @Autowired private val eventRepository: EventRepository
 ) {
     fun registerMusician(registerMusicianRequest: RegisterMusicianRequest, req : HttpServletRequest) : MusicianDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
@@ -64,5 +65,13 @@ class MusicianService (
         musicianInstrumentRepository.saveAll(musicianInstruments)
 
         return musicianInstruments.map { InstrumentsDto(it.instrument.id, it.instrument.name) }
+    }
+    fun getEventsByLocation(req: HttpServletRequest): List<EventDto> {
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+        val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as a musician")
+        val events = eventRepository.findUnfinalizedEventsAfterOrEqual(LocalDate.now())
+
+        return events.map { EventDto(it) }
     }
 }
