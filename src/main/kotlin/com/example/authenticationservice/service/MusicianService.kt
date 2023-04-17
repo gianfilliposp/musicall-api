@@ -1,8 +1,8 @@
 package com.example.authenticationservice.service
 
+import com.example.authenticationservice.utils.GoogleMapsUtils
 import com.example.authenticationservice.dao.*
 import com.example.authenticationservice.dto.EventDto
-import com.example.authenticationservice.dto.EventWithJobsDto
 import com.example.authenticationservice.dto.MusicianDto
 import com.example.authenticationservice.dto.InstrumentsDto
 import com.example.authenticationservice.mapper.MusicianMapper
@@ -12,6 +12,7 @@ import com.example.authenticationservice.model.MusicianInstrument
 import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
 import com.example.authenticationservice.security.JwtTokenProvider
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -28,7 +29,8 @@ class MusicianService (
         @Autowired private val musicianMapper : MusicianMapper,
         @Autowired private val musicianInstrumentRepository: MusicianInstrumentRepository,
         @Autowired private val instrumentRepository: InstrumentRepository,
-        @Autowired private val eventRepository: EventRepository
+        @Autowired private val eventRepository: EventRepository,
+        @Autowired private val googleMapsService: GoogleMapsUtils
 ) {
     fun registerMusician(registerMusicianRequest: RegisterMusicianRequest, req : HttpServletRequest) : MusicianDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
@@ -71,7 +73,35 @@ class MusicianService (
         val id = jwtTokenProvider.getId(token).toLong()
         val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as a musician")
         val events = eventRepository.findUnfinalizedEventsAfterOrEqual(LocalDate.now())
+        if (events.size < 1) return emptyList()
 
-        return events.map { EventDto(it) }
+        var destinations: String = ""
+        events.forEach { destinations+=it.cep + "|"}
+        destinations = destinations.dropLast(1)
+
+        val response = googleMapsService.getDistanceMatrix(cep, destinations)
+        val mapper = ObjectMapper()
+        val data = mapper.readValue(response, Map::class.java)
+        val eventsDto = events.map { EventDto(it) }
+
+
+        println(response)
+
+        val rows = data["rows"] as List<*>
+        for ((rowIndex, row) in rows.withIndex()) {
+            if (row is Map<*, *>) {
+                val elements = row["elements"] as List<*>
+                for ((elementIndex, element) in elements.withIndex()) {
+                    if (element is Map<*, *> && element["status"] as? String == "OK") {
+                        val distance = (element["distance"] as Map<String, Any>)["value"] as Int
+                        val address = (data["destination_addresses"] as List<String>)
+                        eventsDto[elementIndex].cep =  address[elementIndex]
+                        eventsDto[elementIndex].distance = distance
+                    }
+                }
+            }
+        }
+
+        return eventsDto.sortedBy { it.distance }
     }
 }

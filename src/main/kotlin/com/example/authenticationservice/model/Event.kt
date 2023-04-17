@@ -34,7 +34,7 @@ data class Event
         val eventJob: MutableList<EventJob> = mutableListOf()
     ) {
         @Column(nullable = false)
-        val finalized = false
+        var finalized = false
 
         constructor(
             createEventRequest: CreateEventRequest, creator: User

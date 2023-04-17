@@ -13,11 +13,13 @@ data class EventDto(
         val id: Long,
         val creatorEventId: UserEventDto,
         val name: String,
-        val cep: String,
+        var cep: String,
         val eventDate: LocalDate,
         val durationHours: Int,
         val eventJobs: List<EventJobDto>
 ) {
+        var distance: Int = Int.MAX_VALUE
+
     constructor(event: Event) : this(
             id = event.id,
             creatorEventId = UserEventDto(event.user),
