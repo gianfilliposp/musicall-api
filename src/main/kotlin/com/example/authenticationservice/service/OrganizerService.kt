@@ -87,8 +87,14 @@ class OrganizerService (
             event.name = if (updateEventRequest.name == event.name) throw ResponseStatusException(HttpStatus.CONFLICT, "The name is the same") else updateEventRequest.name
             hasChanges = true
         }
-        if (updateEventRequest.local != null) {
-            event.local = if (updateEventRequest.local == event.local) throw ResponseStatusException(HttpStatus.CONFLICT, "The local is the same") else updateEventRequest.local
+
+        if (updateEventRequest.cep != null) {
+            event.cep = if (updateEventRequest.cep == event.cep) throw ResponseStatusException(HttpStatus.CONFLICT, "The cep is the same") else updateEventRequest.cep
+            hasChanges = true
+        }
+
+        if (updateEventRequest.complement != null) {
+            event.complement = if (updateEventRequest.complement == event.complement) throw ResponseStatusException(HttpStatus.CONFLICT, "The local is the same") else updateEventRequest.complement
             hasChanges = true
         }
 
@@ -96,6 +102,7 @@ class OrganizerService (
             event.eventDate = if (updateEventRequest.eventDate == event.eventDate) throw ResponseStatusException(HttpStatus.CONFLICT, "The event date is the same") else updateEventRequest.eventDate
             hasChanges = true
         }
+
         if (updateEventRequest.durationHours != null) {
             event.durationHours = if (updateEventRequest.durationHours == event.durationHours) throw ResponseStatusException(HttpStatus.CONFLICT, "The duration in hours is the same") else updateEventRequest.durationHours
             hasChanges = true

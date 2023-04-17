@@ -1,7 +1,6 @@
 package com.example.authenticationservice.controller
 
-import com.example.authenticationservice.dto.InstrumentsDto
-import com.example.authenticationservice.dto.MusicianDto
+import com.example.authenticationservice.dto.*
 import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
@@ -44,6 +43,13 @@ class MusicianController (
         val instrumentDto = musicianService.registerInstrument(registerInstrumentRequest, req)
 
         return ResponseEntity.status(201).body(instrumentDto)
+    }
+
+    @GetMapping("/event")
+    fun getEventsByLocation(req: HttpServletRequest) : ResponseEntity<List<EventDto>> {
+        val events = musicianService.getEventsByLocation(req)
+
+        return ResponseEntity.status(200).body(events)
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

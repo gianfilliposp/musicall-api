@@ -19,7 +19,10 @@ data class Event
         var name: String,
 
         @Column(nullable = false)
-        var local: String,
+        var cep: String,
+
+        @Column(nullable = false)
+        var complement: String,
 
         @Column(nullable = false)
         var eventDate: LocalDate,
@@ -38,7 +41,8 @@ data class Event
         ) : this(
                 user = creator,
                 name =  createEventRequest.name!!,
-                local =  createEventRequest.local!!,
+                cep =  createEventRequest.cep!!,
+                complement = createEventRequest.complement!!,
                 eventDate =  createEventRequest.eventDate!!,
                 durationHours =  createEventRequest.durationHours!!
         )
@@ -46,7 +50,8 @@ data class Event
         constructor() :this (
                 user = User(),
                 name =  "",
-                local =  "",
+                cep =  "",
+                complement = "",
                 eventDate =  LocalDate.now(),
                 durationHours =  0
         )
