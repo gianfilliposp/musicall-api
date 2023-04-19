@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank
 
 data class EventDto(
         val id: Long,
-        val creatorEventId: UserEventDto,
+        val creatorEventId: UserDto,
         val name: String,
         var cep: String,
         val eventDate: LocalDate,
@@ -22,7 +22,7 @@ data class EventDto(
 
     constructor(event: Event) : this(
             id = event.id,
-            creatorEventId = UserEventDto(event.user),
+            creatorEventId = UserDto(event.user),
             name = event.name,
             cep = event.cep,
             eventDate = event.eventDate,
