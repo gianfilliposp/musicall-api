@@ -7,6 +7,7 @@ import com.example.authenticationservice.parameters.EmailResetRequest
 import com.example.authenticationservice.parameters.SetEmailRequest
 import com.example.authenticationservice.service.UserService
 import com.sun.istack.NotNull
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,6 +21,7 @@ import javax.validation.constraints.NotBlank
 
 @RestController
 @RequestMapping("/usr")
+@SecurityRequirement(name = "Bearer Authentication")
 class UserController (
         @Autowired private val userService : UserService
 ) {

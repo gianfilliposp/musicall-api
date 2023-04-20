@@ -6,6 +6,7 @@ import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationExce
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
 import com.example.authenticationservice.service.MusicianService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,6 +24,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/msc")
+@SecurityRequirement(name = "Bearer Authentication")
 class MusicianController (
     @Autowired private val musicianService: MusicianService
 ) {
