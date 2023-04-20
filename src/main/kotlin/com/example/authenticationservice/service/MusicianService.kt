@@ -1,5 +1,6 @@
 package com.example.authenticationservice.service
 
+import com.example.authenticationservice.parameters.UpdateMusicianRequest
 import com.example.authenticationservice.utils.GoogleMapsUtils
 import com.example.authenticationservice.dao.*
 import com.example.authenticationservice.dto.EventDto
@@ -100,5 +101,30 @@ class MusicianService (
         }
 
         return eventsDto.sortedBy { it.distance }
+    }
+
+    fun updateMusician(updateMusicianRequest: UpdateMusicianRequest, req: HttpServletRequest) {
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+        val musician = musicianRepository.getMusicianByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found")
+
+        if (updateMusicianRequest.cep.isNullOrBlank() and updateMusicianRequest.description.isNullOrBlank()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "The body is missing information")
+
+        var hasChanges = false
+
+
+        if (updateMusicianRequest.cep != null) {
+            musician.cep = updateMusicianRequest.cep!!
+            hasChanges = true
+        }
+
+        if (updateMusicianRequest.description != null) {
+            musician.description = updateMusicianRequest.description!!
+            hasChanges = true
+        }
+
+        if (!hasChanges) throw ResponseStatusException(HttpStatus.CONFLICT, "The musician info is the same")
+
+        musicianRepository.save(musician)
     }
 }

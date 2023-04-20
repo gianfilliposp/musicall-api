@@ -5,12 +5,12 @@ import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
+import com.example.authenticationservice.parameters.UpdateMusicianRequest
 import com.example.authenticationservice.service.MusicianService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
@@ -38,6 +38,12 @@ class MusicianController (
         )*/
 
         return ResponseEntity.status(201).body(musicianDto)
+    }
+    @PutMapping("")
+    fun updateMusician(req : HttpServletRequest, @Valid @RequestBody updateMusicianRequest: UpdateMusicianRequest): ResponseEntity<Void> {
+        val eventDto = musicianService.updateMusician(updateMusicianRequest, req)
+
+        return ResponseEntity.status(200).build()
     }
 
     @PostMapping("/instrument")

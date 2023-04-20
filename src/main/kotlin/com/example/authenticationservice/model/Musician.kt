@@ -14,10 +14,10 @@ data class Musician(
     val user: User,
 
     @Column(nullable = false)
-    val description: String,
+    var description: String,
 
     @Column(nullable = false)
-    val cep: String,
+    var cep: String,
 
     @OneToMany(mappedBy = "musician", cascade = [CascadeType.ALL], orphanRemoval = true)
     val musicianInstruments: MutableList<MusicianInstrument> = mutableListOf(),
