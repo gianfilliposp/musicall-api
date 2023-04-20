@@ -41,7 +41,7 @@ class UserController (
         return ResponseEntity.status(200).build()
     }
 
-    @PutMapping("/change-email")
+    @PatchMapping("/change-email")
     fun setNewEmail(req: HttpServletRequest, @Valid @NotBlank @NotNull @RequestBody setEmailRequest: SetEmailRequest): ResponseEntity<Void> {
         userService.setNewEmail(req, setEmailRequest)
 

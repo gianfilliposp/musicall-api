@@ -47,6 +47,7 @@ class UserService (
         if (user.email == user.newEmail) throw ResponseStatusException(HttpStatus.CONFLICT, "This is the email already")
 
         user.email = user.newEmail
+        user.confirmationToken = ""
         user.newEmail = ""
 
         userRepository.save(user)
