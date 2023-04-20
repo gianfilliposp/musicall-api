@@ -84,9 +84,6 @@ class MusicianService (
         val data = mapper.readValue(response, Map::class.java)
         val eventsDto = events.map { EventDto(it) }
 
-
-        println(response)
-
         val rows = data["rows"] as List<*>
         for ((rowIndex, row) in rows.withIndex()) {
             if (row is Map<*, *>) {

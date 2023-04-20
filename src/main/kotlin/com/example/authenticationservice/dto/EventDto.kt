@@ -11,22 +11,22 @@ import javax.validation.constraints.NotBlank
 
 data class EventDto(
         val id: Long,
-        val creatorEventId: UserDto,
         val name: String,
         var cep: String,
         val eventDate: LocalDate,
         val durationHours: Int,
+        val user: UserDto,
         val eventJobs: List<EventJobDto>
 ) {
         var distance: Int = Int.MAX_VALUE
 
     constructor(event: Event) : this(
             id = event.id,
-            creatorEventId = UserDto(event.user),
             name = event.name,
             cep = event.cep,
             eventDate = event.eventDate,
             durationHours = event.durationHours,
+            user = UserDto(event.user),
             eventJobs = event.eventJob.map { EventJobDto(it) }
     )
 }
