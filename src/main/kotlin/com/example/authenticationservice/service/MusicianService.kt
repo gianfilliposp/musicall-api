@@ -53,8 +53,9 @@ class MusicianService (
         val id = jwtTokenProvider.getId(token).toLong()
         val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found")
         val musician : Musician? = musicianRepository.getByUser(user) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as musician")
-        val instrumentsOfUser = musicianInstrumentRepository.findAll().map { it.instrument }
-        if (musicianInstrumentRepository.existsByInstrumentIn(instrumentsOfUser)) throw ResponseStatusException(HttpStatus.CONFLICT, "Instrument already registered")
+        val instrumentsOfUser = musicianInstrumentRepository.findByMusician(musician!!).map { it.instrument.id }.toHashSet()
+
+        registerInstrumentRequest.fkInstrument!!.forEach { if (instrumentsOfUser.contains(it)) throw ResponseStatusException(HttpStatus.CONFLICT, "Instrument already registered")}
 
         val instruments = instrumentRepository.findAll()
         val instrumentMap : HashMap<Long, Instrument> = HashMap()
@@ -115,8 +116,6 @@ class MusicianService (
                 }
             }
         }
-
-        println(eventsDto)
 
         return eventsDto.sortedBy { it.distance }
     }

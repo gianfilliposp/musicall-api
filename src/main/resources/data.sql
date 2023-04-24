@@ -45,6 +45,7 @@ VALUES
   (1, 4, NULL),
   (1, 5, NULL),
   (1, 6, NULL),
+
   (2, 2, NULL),
   (2, 3, NULL),
   (2, 4, NULL),
@@ -54,5 +55,9 @@ VALUES
   (3, 3, NULL),
   (3, 4, NULL),
   (3, 5, NULL),
-  (3, 6, NULL);
+  (3, 6, NULL),
+
+  (11, 2, NULL),
+  (11, 3, NULL),
+  (11, 3, NULL);
 
