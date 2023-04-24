@@ -13,7 +13,7 @@ class JobRequest (
     val eventJob: EventJob,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn (name = "musician_id", nullable = true)
+    @JoinColumn (name = "musician_id", nullable = false)
     var musician: Musician? = null,
 
     @Column(nullable = false)

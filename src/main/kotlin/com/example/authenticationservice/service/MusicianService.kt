@@ -7,9 +7,11 @@ import com.example.authenticationservice.dto.EventDto
 import com.example.authenticationservice.dto.MusicianDto
 import com.example.authenticationservice.dto.InstrumentsDto
 import com.example.authenticationservice.mapper.MusicianMapper
+import com.example.authenticationservice.model.Event
 import com.example.authenticationservice.model.Instrument
 import com.example.authenticationservice.model.Musician
 import com.example.authenticationservice.model.MusicianInstrument
+import com.example.authenticationservice.parameters.CreateJobRequestRequest
 import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
 import com.example.authenticationservice.security.JwtTokenProvider
@@ -73,17 +75,31 @@ class MusicianService (
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
         val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as a musician")
-        val events = eventRepository.findUnfinalizedEventsAfterOrEqual(LocalDate.now())
-        if (events.size < 1) return emptyList()
+        val instrumentsHash = musicianRepository.findInstrumentIdsByUserId(id).toHashSet()
+        if (instrumentsHash.isEmpty()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You need to add instruments first")
+
+        var events = eventRepository.findUnfinalizedEventsAfterOrEqual(LocalDate.now())
+
+        val eventsRes = mutableListOf<Event>()
+        event@ for (event in events) {
+            for (job in event.eventJob) {
+                if (instrumentsHash.contains(job.instrument.id)) {
+                    eventsRes.add(event)
+                    continue@event
+                }
+            }
+        }
+
+        if (eventsRes.size < 1) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No event was found for you")
 
         var destinations: String = ""
-        events.forEach { destinations+=it.cep + "|"}
+        eventsRes.forEach { destinations+=it.cep + "|"}
         destinations = destinations.dropLast(1)
 
         val response = googleMapsService.getDistanceMatrix(cep, destinations)
         val mapper = ObjectMapper()
         val data = mapper.readValue(response, Map::class.java)
-        val eventsDto = events.map { EventDto(it) }
+        val eventsDto = eventsRes.map { EventDto(it) }
 
         val rows = data["rows"] as List<*>
         for ((rowIndex, row) in rows.withIndex()) {
@@ -99,6 +115,8 @@ class MusicianService (
                 }
             }
         }
+
+        println(eventsDto)
 
         return eventsDto.sortedBy { it.distance }
     }
@@ -126,5 +144,12 @@ class MusicianService (
         if (!hasChanges) throw ResponseStatusException(HttpStatus.CONFLICT, "The musician info is the same")
 
         musicianRepository.save(musician)
+    }
+
+    fun createJobRequest(req: HttpServletRequest, createJobRequestRequest: CreateJobRequestRequest) {
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+        if (!musicianRepository.existsByUserId(id)) throw ResponseStatusException(HttpStatus.FORBIDDEN, "Musician not registered, complete your register")
+
     }
 }

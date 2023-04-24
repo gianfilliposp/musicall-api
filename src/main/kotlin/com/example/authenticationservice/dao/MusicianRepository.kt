@@ -17,5 +17,9 @@ interface MusicianRepository : JpaRepository<Musician, Long> {
     fun findCepByUserId(userId: Long): String?
     @Query("SELECT m FROM Musician m WHERE m.user.id = :id")
     fun getMusicianByUserId(id: Long): Musician?
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END\n FROM Musician m WHERE m.user.id = :userId")
+    fun existsByUserId(userId: Long): Boolean
 
+    @Query("SELECT mi.instrument.id FROM Musician m JOIN m.musicianInstruments mi WHERE m.user.id = :userId")
+    fun findInstrumentIdsByUserId(userId: Long): List<Long>
 }

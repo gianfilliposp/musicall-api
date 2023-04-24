@@ -4,6 +4,7 @@ import com.example.authenticationservice.dto.*
 import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
+import com.example.authenticationservice.parameters.CreateJobRequestRequest
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
 import com.example.authenticationservice.parameters.UpdateMusicianRequest
 import com.example.authenticationservice.service.MusicianService
@@ -47,7 +48,7 @@ class MusicianController (
     }
 
     @PostMapping("/instrument")
-    fun registerInstrument(req: HttpServletRequest, @Valid @RequestBody registerInstrumentRequest: RegisterInstrumentRequest): ResponseEntity<List<InstrumentsDto>> {
+    fun registerInstrument(req: HttpServletRequest, @RequestBody @Valid registerInstrumentRequest: RegisterInstrumentRequest): ResponseEntity<List<InstrumentsDto>> {
         val instrumentDto = musicianService.registerInstrument(registerInstrumentRequest, req)
 
         return ResponseEntity.status(201).body(instrumentDto)
@@ -58,6 +59,13 @@ class MusicianController (
         val events = musicianService.getEventsByLocation(req)
 
         return ResponseEntity.status(200).body(events)
+    }
+
+    @PostMapping("/event/job-request")
+    fun createJobRequest(req: HttpServletRequest, @RequestBody @Valid createJobRequestRequest: CreateJobRequestRequest): ResponseEntity<Void>{
+        musicianService.createJobRequest(req, createJobRequestRequest)
+
+        return ResponseEntity.status(201).build()
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

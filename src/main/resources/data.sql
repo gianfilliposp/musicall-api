@@ -37,3 +37,22 @@ VALUES
   (1, 'My Event - RJ', '20000-000', 'My Complement', '2024-01-19', 2, false),
   (1, 'My Event - RN', '59000-000', 'My Complement', '2024-01-20', 2, false),
   (1, 'My Event - RS', '90000-000', 'My Complement', '2024-01-21', 2, false);
+
+INSERT INTO event_job (event_id, instrument_id, musician_id)
+VALUES
+  (1, 2, NULL),
+  (1, 3, NULL),
+  (1, 4, NULL),
+  (1, 5, NULL),
+  (1, 6, NULL),
+  (2, 2, NULL),
+  (2, 3, NULL),
+  (2, 4, NULL),
+  (2, 5, NULL),
+  (2, 6, NULL),
+  (3, 2, NULL),
+  (3, 3, NULL),
+  (3, 4, NULL),
+  (3, 5, NULL),
+  (3, 6, NULL);
+
