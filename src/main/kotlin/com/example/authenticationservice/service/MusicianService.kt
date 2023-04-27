@@ -7,10 +7,7 @@ import com.example.authenticationservice.dto.EventDto
 import com.example.authenticationservice.dto.MusicianDto
 import com.example.authenticationservice.dto.InstrumentsDto
 import com.example.authenticationservice.mapper.MusicianMapper
-import com.example.authenticationservice.model.Event
-import com.example.authenticationservice.model.Instrument
-import com.example.authenticationservice.model.Musician
-import com.example.authenticationservice.model.MusicianInstrument
+import com.example.authenticationservice.model.*
 import com.example.authenticationservice.parameters.CreateJobRequestRequest
 import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
@@ -32,6 +29,8 @@ class MusicianService (
         @Autowired private val musicianMapper : MusicianMapper,
         @Autowired private val musicianInstrumentRepository: MusicianInstrumentRepository,
         @Autowired private val instrumentRepository: InstrumentRepository,
+        @Autowired private val eventJobRepository: EventJobRepository,
+        @Autowired private val jobRequestRepository: JobRequestRepository,
         @Autowired private val eventRepository: EventRepository,
         @Autowired private val googleMapsService: GoogleMapsUtils
 ) {
@@ -148,7 +147,18 @@ class MusicianService (
     fun createJobRequest(req: HttpServletRequest, createJobRequestRequest: CreateJobRequestRequest) {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
-        if (!musicianRepository.existsByUserId(id)) throw ResponseStatusException(HttpStatus.FORBIDDEN, "Musician not registered, complete your register")
+        val musician = musicianRepository.findByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as musician")
+        val eventJob = eventJobRepository.getById(createJobRequestRequest.fkEventJob!!) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find this event job")
 
+        if (eventJob.musician != null) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "There is a user registered for this event job")
+
+        val musicianInstrumentHash = musician.musicianInstruments.map { it.instrument.id }.toHashSet()
+        if (!musicianInstrumentHash.contains(eventJob.instrument.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You don't play this instrument")
+
+        val jobRequest = JobRequest(eventJob = eventJob, musician = musician, musicianConfirmed = true)
+        if (jobRequestRepository.existsByMusicianIdAndEventJobId(musician.id, createJobRequestRequest.fkEventJob)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already made a request for this job")
+        if (eventJobRepository.existsByEventDateAndMusicianId(eventJob.event.eventDate, musician.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You already have a event in this date")
+
+        jobRequestRepository.save(jobRequest)
     }
 }

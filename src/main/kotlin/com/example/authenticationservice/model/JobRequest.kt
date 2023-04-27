@@ -25,6 +25,5 @@ class JobRequest (
     constructor(): this (
         eventJob = EventJob(),
         musician = Musician()
-
     )
 }

@@ -6,6 +6,7 @@ import com.example.authenticationservice.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import javax.transaction.Transactional
 
 
@@ -22,4 +23,5 @@ interface MusicianRepository : JpaRepository<Musician, Long> {
 
     @Query("SELECT mi.instrument.id FROM Musician m JOIN m.musicianInstruments mi WHERE m.user.id = :userId")
     fun findInstrumentIdsByUserId(userId: Long): List<Long>
+    fun findByUserId(id: Long): Musician?
 }

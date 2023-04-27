@@ -5,6 +5,5 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 class CreateJobRequestRequest (
-    @JsonProperty("fkEvent") @NotNull val fkEvent: Long,
-    @JsonProperty("fkMusician") @NotNull val fkMusician: Long
+    @JsonProperty("fkEventJob") @NotNull val fkEventJob: Long?
 )
