@@ -62,10 +62,17 @@ class MusicianController (
     }
 
     @PostMapping("/event/job-request")
-    fun createJobRequest(req: HttpServletRequest, @RequestBody @Valid createJobRequestRequest: CreateJobRequestRequest): ResponseEntity<Void>{
+    fun createJobRequest(req: HttpServletRequest, @RequestBody @Valid createJobRequestRequest: CreateJobRequestRequest): ResponseEntity<Void> {
         musicianService.createJobRequest(req, createJobRequestRequest)
 
         return ResponseEntity.status(201).build()
+    }
+
+    @DeleteMapping("/event/job-request")
+    fun deleteJobRequest(req: HttpServletRequest, @RequestBody @Valid createJobRequestRequest: CreateJobRequestRequest): ResponseEntity<Void> {
+        musicianService.deleteJobRequest(req, createJobRequestRequest)
+
+        return  ResponseEntity.status(200).build()
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

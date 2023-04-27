@@ -161,4 +161,15 @@ class MusicianService (
 
         jobRequestRepository.save(jobRequest)
     }
+
+    fun deleteJobRequest(req: HttpServletRequest, createJobRequestRequest: CreateJobRequestRequest) {
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+        val musicianId = musicianRepository.findIdByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as musician")
+        val deleteJobRequestDto = jobRequestRepository.findIdAndOrganizerConfirmedByEventJobIdAndMusicianId(createJobRequestRequest.fkEventJob!!, musicianId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You can't delete this job request")
+
+        if (deleteJobRequestDto.organizerConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "The organizer has already confirmed the job request")
+
+        jobRequestRepository.deleteById(deleteJobRequestDto.id)
+    }
 }

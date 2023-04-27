@@ -24,4 +24,7 @@ interface MusicianRepository : JpaRepository<Musician, Long> {
     @Query("SELECT mi.instrument.id FROM Musician m JOIN m.musicianInstruments mi WHERE m.user.id = :userId")
     fun findInstrumentIdsByUserId(userId: Long): List<Long>
     fun findByUserId(id: Long): Musician?
+
+    @Query("SELECT m.id FROM Musician m WHERE m.user.id = :fkUser")
+    fun findIdByUserId(fkUser: Long): Long?
 }
