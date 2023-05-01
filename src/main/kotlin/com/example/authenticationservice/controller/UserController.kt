@@ -1,5 +1,6 @@
 package com.example.authenticationservice.controller
 
+import com.example.authenticationservice.dto.JobRequestDto
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.parameters.DeleteUserRequest
@@ -48,6 +49,12 @@ class UserController (
         userService.setNewEmail(req, setEmailRequest)
 
         return ResponseEntity.status(200).build()
+    }
+    @GetMapping("/event/job-request")
+    fun findJobsNotification(req: HttpServletRequest): ResponseEntity<List<JobRequestDto>> {
+        val jobRequests = userService.findJobsNotification(req)
+
+        return ResponseEntity.status(200).body(jobRequests)
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

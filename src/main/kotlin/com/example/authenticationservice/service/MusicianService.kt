@@ -6,6 +6,7 @@ import com.example.authenticationservice.dao.*
 import com.example.authenticationservice.dto.EventDto
 import com.example.authenticationservice.dto.MusicianDto
 import com.example.authenticationservice.dto.InstrumentsDto
+import com.example.authenticationservice.dto.NotificationTypeDto
 import com.example.authenticationservice.mapper.MusicianMapper
 import com.example.authenticationservice.model.*
 import com.example.authenticationservice.parameters.CreateJobRequestRequest
@@ -23,16 +24,17 @@ import kotlin.collections.HashMap
 
 @Service
 class MusicianService (
-        @Autowired private val userRepository: UserRepository,
-        @Autowired private val jwtTokenProvider: JwtTokenProvider,
-        @Autowired private val musicianRepository: MusicianRepository,
-        @Autowired private val musicianMapper : MusicianMapper,
-        @Autowired private val musicianInstrumentRepository: MusicianInstrumentRepository,
-        @Autowired private val instrumentRepository: InstrumentRepository,
-        @Autowired private val eventJobRepository: EventJobRepository,
-        @Autowired private val jobRequestRepository: JobRequestRepository,
-        @Autowired private val eventRepository: EventRepository,
-        @Autowired private val googleMapsService: GoogleMapsUtils
+    @Autowired private val userRepository: UserRepository,
+    @Autowired private val jwtTokenProvider: JwtTokenProvider,
+    @Autowired private val musicianRepository: MusicianRepository,
+    @Autowired private val musicianMapper : MusicianMapper,
+    @Autowired private val musicianInstrumentRepository: MusicianInstrumentRepository,
+    @Autowired private val instrumentRepository: InstrumentRepository,
+    @Autowired private val eventJobRepository: EventJobRepository,
+    @Autowired private val jobRequestRepository: JobRequestRepository,
+    @Autowired private val eventRepository: EventRepository,
+    @Autowired private val notificationRepository: NotificationRepository,
+    @Autowired private val googleMapsService: GoogleMapsUtils
 ) {
     fun registerMusician(registerMusicianRequest: RegisterMusicianRequest, req : HttpServletRequest) : MusicianDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
@@ -159,7 +161,9 @@ class MusicianService (
         if (jobRequestRepository.existsByMusicianIdAndEventJobId(musician.id, createJobRequestRequest.fkEventJob)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already made a request for this job")
         if (eventJobRepository.existsByEventDateAndMusicianId(eventJob.event.eventDate, musician.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You already have a event in this date")
 
+
         jobRequestRepository.save(jobRequest)
+        notificationRepository.save(Notification(jobRequest = jobRequest, user = eventJob.event.user, notificationType = NotificationTypeDto.REQUEST))
     }
 
     fun deleteJobRequest(req: HttpServletRequest, createJobRequestRequest: CreateJobRequestRequest) {
@@ -170,6 +174,7 @@ class MusicianService (
 
         if (deleteJobRequestDto.organizerConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "The organizer has already confirmed the job request")
 
+        notificationRepository.deleteByJobRequestId(createJobRequestRequest.fkEventJob)
         jobRequestRepository.deleteById(deleteJobRequestDto.id)
     }
 }

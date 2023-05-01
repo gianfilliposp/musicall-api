@@ -61,3 +61,17 @@ VALUES
   (11, 3, NULL),
   (11, 3, NULL);
 
+INSERT INTO musician_instrument (musician_id, instrument_id) VALUES
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(1, 6);
+
+INSERT INTO job_request (event_job_id, musician_id, organizer_confirmed, musician_confirmed) VALUES
+(1, 1, 0, 1),
+(2, 1, 0, 1);
+
+INSERT INTO notification (job_request_id, notification_type, user_id) VALUES
+(1, 1, 1),
+(2, 1,1);

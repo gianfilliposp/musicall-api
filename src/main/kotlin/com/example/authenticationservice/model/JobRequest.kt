@@ -16,6 +16,9 @@ class JobRequest (
     @JoinColumn (name = "musician_id", nullable = false)
     var musician: Musician? = null,
 
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val notifications: MutableList<Notification> = mutableListOf(),
+
     @Column(nullable = false)
     var organizerConfirmed: Boolean = false,
 

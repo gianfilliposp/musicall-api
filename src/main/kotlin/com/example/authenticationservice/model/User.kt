@@ -46,7 +46,10 @@ data class User(
         val musician : Musician? = null,
 
         @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-        val events: MutableList<Event> = mutableListOf()
+        val events: MutableList<Event> = mutableListOf(),
+
+        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+        val notifications: MutableList<Notification> = mutableListOf()
 ) {
     var numberOfEvents = 0
     var isConfirmed = false
