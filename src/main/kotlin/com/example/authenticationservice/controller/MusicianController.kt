@@ -8,6 +8,7 @@ import com.example.authenticationservice.parameters.CreateJobRequestRequest
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
 import com.example.authenticationservice.parameters.UpdateMusicianRequest
 import com.example.authenticationservice.service.MusicianService
+import com.sun.istack.NotNull
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -68,9 +69,9 @@ class MusicianController (
         return ResponseEntity.status(201).build()
     }
 
-    @DeleteMapping("/event/job-request")
-    fun deleteJobRequest(req: HttpServletRequest, @RequestBody @Valid createJobRequestRequest: CreateJobRequestRequest): ResponseEntity<Void> {
-        musicianService.deleteJobRequest(req, createJobRequestRequest)
+    @DeleteMapping("/event/job-request/{jobRequestId}")
+    fun deleteJobRequest(req: HttpServletRequest, @PathVariable("jobRequestId") @Valid @NotNull jobRequestId: Long): ResponseEntity<Void> {
+        musicianService.deleteJobRequest(req, jobRequestId)
 
         return  ResponseEntity.status(200).build()
     }
