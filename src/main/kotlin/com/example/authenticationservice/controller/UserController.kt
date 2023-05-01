@@ -1,5 +1,6 @@
 package com.example.authenticationservice.controller
 
+import com.example.authenticationservice.dto.JobRequestDto
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.parameters.DeleteUserRequest
@@ -7,6 +8,7 @@ import com.example.authenticationservice.parameters.EmailResetRequest
 import com.example.authenticationservice.parameters.SetEmailRequest
 import com.example.authenticationservice.service.UserService
 import com.sun.istack.NotNull
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,6 +22,7 @@ import javax.validation.constraints.NotBlank
 
 @RestController
 @RequestMapping("/usr")
+@SecurityRequirement(name = "Bearer Authentication")
 class UserController (
         @Autowired private val userService : UserService
 ) {
@@ -41,9 +44,22 @@ class UserController (
         return ResponseEntity.status(200).build()
     }
 
-    @PutMapping("/change-email")
+    @PatchMapping("/change-email")
     fun setNewEmail(req: HttpServletRequest, @Valid @NotBlank @NotNull @RequestBody setEmailRequest: SetEmailRequest): ResponseEntity<Void> {
         userService.setNewEmail(req, setEmailRequest)
+
+        return ResponseEntity.status(200).build()
+    }
+    @GetMapping("/event/job-request")
+    fun findJobsNotification(req: HttpServletRequest): ResponseEntity<List<JobRequestDto>> {
+        val jobRequests = userService.findJobsNotification(req)
+
+        return ResponseEntity.status(200).body(jobRequests)
+    }
+
+    @DeleteMapping("/event/job-request/{id}")
+    fun deleteJobsNotification(req: HttpServletRequest, @PathVariable("id") @Valid @NotNull id: Long?): ResponseEntity<Void> {
+        userService.deleteJobNotification(req, id)
 
         return ResponseEntity.status(200).build()
     }

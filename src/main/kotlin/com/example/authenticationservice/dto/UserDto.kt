@@ -5,20 +5,17 @@ import com.example.authenticationservice.model.User
 data class UserDto (
     val id: Long,
     val name: String,
-    val last_name: String,
-    val email: String
+    val last_name: String
 ) {
     constructor(user: User) : this(
             id = user.id,
             name = user.name,
-            last_name = user.lastName,
-            email = user.email
+            last_name = user.lastName
     )
 
     constructor() : this(
             id = 0,
             name = "",
-            last_name = "",
-            email = ""
+            last_name = ""
     )
 }

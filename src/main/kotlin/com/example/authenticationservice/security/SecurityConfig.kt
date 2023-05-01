@@ -32,6 +32,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll() // new rule
+                .antMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll() // new rule
                 .anyRequest().authenticated()
                 .and()
                 .apply(JwtConfigurator(jwtTokenProvider!!))

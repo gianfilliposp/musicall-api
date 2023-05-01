@@ -3,10 +3,13 @@ package com.example.authenticationservice.controller
 import com.example.authenticationservice.dto.CreateEventDto
 import com.example.authenticationservice.dto.EventDto
 import com.example.authenticationservice.dto.EventJobDto
+import com.example.authenticationservice.dto.JobRequestDto
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.model.EventJob
+import com.example.authenticationservice.model.JobRequest
 import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.service.OrganizerService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,8 +21,10 @@ import java.util.HashMap
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
+
 @RestController
 @RequestMapping("/org")
+@SecurityRequirement(name = "Bearer Authentication")
 class OrganizerController (
         @Autowired private val eventService : OrganizerService
 ) {

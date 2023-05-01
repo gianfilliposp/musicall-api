@@ -9,15 +9,18 @@ data class Musician(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
+    @OneToMany(mappedBy = "musician", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val jobRequests: MutableList<JobRequest> = mutableListOf(),
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "user_id", nullable = false)
     val user: User,
 
     @Column(nullable = false)
-    val description: String,
+    var description: String,
 
     @Column(nullable = false)
-    val cep: String,
+    var cep: String,
 
     @OneToMany(mappedBy = "musician", cascade = [CascadeType.ALL], orphanRemoval = true)
     val musicianInstruments: MutableList<MusicianInstrument> = mutableListOf(),

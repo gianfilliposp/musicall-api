@@ -4,12 +4,15 @@ import com.example.authenticationservice.dto.*
 import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
+import com.example.authenticationservice.parameters.CreateJobRequestRequest
 import com.example.authenticationservice.parameters.RegisterMusicianRequest
+import com.example.authenticationservice.parameters.UpdateMusicianRequest
 import com.example.authenticationservice.service.MusicianService
+import com.sun.istack.NotNull
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
@@ -23,6 +26,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/msc")
+@SecurityRequirement(name = "Bearer Authentication")
 class MusicianController (
     @Autowired private val musicianService: MusicianService
 ) {
@@ -37,9 +41,15 @@ class MusicianController (
 
         return ResponseEntity.status(201).body(musicianDto)
     }
+    @PutMapping("")
+    fun updateMusician(req : HttpServletRequest, @Valid @RequestBody updateMusicianRequest: UpdateMusicianRequest): ResponseEntity<Void> {
+        val eventDto = musicianService.updateMusician(updateMusicianRequest, req)
+
+        return ResponseEntity.status(200).build()
+    }
 
     @PostMapping("/instrument")
-    fun registerInstrument(req: HttpServletRequest, @Valid @RequestBody registerInstrumentRequest: RegisterInstrumentRequest): ResponseEntity<List<InstrumentsDto>> {
+    fun registerInstrument(req: HttpServletRequest, @RequestBody @Valid registerInstrumentRequest: RegisterInstrumentRequest): ResponseEntity<List<InstrumentsDto>> {
         val instrumentDto = musicianService.registerInstrument(registerInstrumentRequest, req)
 
         return ResponseEntity.status(201).body(instrumentDto)
@@ -50,6 +60,20 @@ class MusicianController (
         val events = musicianService.getEventsByLocation(req)
 
         return ResponseEntity.status(200).body(events)
+    }
+
+    @PostMapping("/event/job-request")
+    fun createJobRequest(req: HttpServletRequest, @RequestBody @Valid createJobRequestRequest: CreateJobRequestRequest): ResponseEntity<Void> {
+        musicianService.createJobRequest(req, createJobRequestRequest)
+
+        return ResponseEntity.status(201).build()
+    }
+
+    @DeleteMapping("/event/job-request/{jobRequestId}")
+    fun deleteJobRequest(req: HttpServletRequest, @PathVariable("jobRequestId") @Valid @NotNull jobRequestId: Long): ResponseEntity<Void> {
+        musicianService.deleteJobRequest(req, jobRequestId)
+
+        return  ResponseEntity.status(200).build()
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
