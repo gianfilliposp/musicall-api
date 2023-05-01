@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface JobRequestRepository: JpaRepository<JobRequest, Long> {
-    @Query("SELECT COUNT(j) > 0 FROM JobRequest j WHERE j.musician.id = :musicianId AND j.eventJob.id = :fkEventJob")
-    fun existsByMusicianIdAndEventJobId(musicianId: Long, fkEventJob: Long): Boolean
+    @Query("SELECT COUNT(j) > 0 FROM JobRequest j WHERE j.musician.id = :musicianId AND j.eventJob.event.id = :eventId")
+    fun existsByMusicianIdAndEventId(musicianId: Long, eventId: Long): Boolean
 
     @Query("""
         SELECT new com.example.authenticationservice.dto.DeleteJobRequestDto(j.id, j.organizerConfirmed)

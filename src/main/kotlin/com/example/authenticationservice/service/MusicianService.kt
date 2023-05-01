@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 import javax.servlet.http.HttpServletRequest
@@ -158,7 +159,7 @@ class MusicianService (
         if (!musicianInstrumentHash.contains(eventJob.instrument.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You don't play this instrument")
 
         val jobRequest = JobRequest(eventJob = eventJob, musician = musician, musicianConfirmed = true)
-        if (jobRequestRepository.existsByMusicianIdAndEventJobId(musician.id, createJobRequestRequest.fkEventJob)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already made a request for this job")
+        if (jobRequestRepository.existsByMusicianIdAndEventId(musician.id, eventJob.event.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already made a request for this job")
         if (eventJobRepository.existsByEventDateAndMusicianId(eventJob.event.eventDate, musician.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You already have a event in this date")
 
 
@@ -166,6 +167,7 @@ class MusicianService (
         notificationRepository.save(Notification(jobRequest = jobRequest, user = eventJob.event.user, notificationType = NotificationTypeDto.REQUEST))
     }
 
+    @Transactional
     fun deleteJobRequest(req: HttpServletRequest, createJobRequestRequest: CreateJobRequestRequest) {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
@@ -174,7 +176,7 @@ class MusicianService (
 
         if (deleteJobRequestDto.organizerConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "The organizer has already confirmed the job request")
 
-        notificationRepository.deleteByJobRequestId(createJobRequestRequest.fkEventJob)
+        notificationRepository.deleteByJobRequestId(deleteJobRequestDto.id)
         jobRequestRepository.deleteById(deleteJobRequestDto.id)
     }
 }

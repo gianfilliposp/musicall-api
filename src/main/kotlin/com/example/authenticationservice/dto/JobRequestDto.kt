@@ -2,7 +2,8 @@ package com.example.authenticationservice.dto
 
 import com.example.authenticationservice.model.JobRequest
 
-class JobRequestDto (
+class
+JobRequestDto (
    val id: Long,
    val musicianConfirmed: Boolean,
    val organizerConfirmed: Boolean,

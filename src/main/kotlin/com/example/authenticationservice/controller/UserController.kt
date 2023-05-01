@@ -57,6 +57,13 @@ class UserController (
         return ResponseEntity.status(200).body(jobRequests)
     }
 
+    @DeleteMapping("/event/job-request/{id}")
+    fun deleteJobsNotification(req: HttpServletRequest, @PathVariable("id") @Valid @NotNull id: Long?): ResponseEntity<Void> {
+        userService.deleteJobNotification(req, id)
+
+        return ResponseEntity.status(200).build()
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidJwtAuthenticationException::class)
     fun handleValidationExceptions(ex: InvalidJwtAuthenticationException): Map<String, String> {
