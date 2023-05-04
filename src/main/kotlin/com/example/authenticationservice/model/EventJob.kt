@@ -24,12 +24,16 @@ data class EventJob (
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "musician_id", nullable = true)
-        var musician : Musician? = null
+        var musician: Musician? = null,
+
+        @Column(nullable = false)
+        val payment: Double = 0.0
 ) {
-    constructor(event: Event, instrument: Instrument) : this (
+    constructor(event: Event, instrument: Instrument, payment: Double) : this (
             event = event,
             instrument = instrument,
-            musician = null
+            musician = null,
+            payment = payment
     )
 
     constructor() : this (

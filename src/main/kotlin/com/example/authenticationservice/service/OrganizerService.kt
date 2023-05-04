@@ -1,10 +1,7 @@
 package com.example.authenticationservice.service
 
 import com.example.authenticationservice.dao.*
-import com.example.authenticationservice.dto.CreateEventDto
-import com.example.authenticationservice.dto.EventDto
-import com.example.authenticationservice.dto.EventJobDto
-import com.example.authenticationservice.dto.JobRequestDto
+import com.example.authenticationservice.dto.*
 import com.example.authenticationservice.model.Event
 import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.Instrument
@@ -50,15 +47,17 @@ class OrganizerService (
     fun createEventJob(createEventJobRequest: CreateEventJobRequest, req: HttpServletRequest): List<EventJobDto> {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        val event = eventRepository.findByIdAndUserAndFinalized(createEventJobRequest.fkEvent!!, user, false) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You cant create jobs for this event")
+        val eventId = eventRepository.findIdByIdAndUserIdAndFinalizedFalse(createEventJobRequest.fkEvent!!, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You cant create jobs for this event")
+        val instrumentsEventJobIds = createEventJobRequest.jobs!!.map { it.instrumentId }
 
-        val instruments = instrumentRepository.findAll()
-        val instrumentMap : HashMap<Long, Instrument> = HashMap()
-        instruments.forEach { instrumentMap[it.id] = it }
+        val instruments = instrumentRepository.findInstrumentDtoByIdIn(instrumentsEventJobIds)
+        val instrumentsHash = hashMapOf<Long, InstrumentDto?>()
+        instruments.forEach { instrumentsHash[it.id] = it }
 
-        val eventJobs = createEventJobRequest.fkInstrument!!.map {
-            if (instrumentMap[it] != null) EventJob(event, instrumentMap[it]!!)
+
+        val eventJobs = mutableListOf<EventJob>()
+        createEventJobRequest.jobs!!.forEach {
+            if (instrumentsHash.containsKey(it.instrumentId)) for(i in 1 .. it.quantity) { eventJobs.add(EventJob(Event(eventId), Instrument(id = it.instrumentId, name = instrumentsHash[it.instrumentId]!!.name), it.payment)) }
             else throw ResponseStatusException(HttpStatus.NOT_FOUND, "Instrument not found")
         }
 

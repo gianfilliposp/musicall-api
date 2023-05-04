@@ -9,7 +9,7 @@ import javax.persistence.*
 data class Instrument (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        var id: Long = 0,
 
         @Column(nullable = false)
         val name: String,
@@ -23,5 +23,4 @@ data class Instrument (
     constructor (): this (
             name = ""
     )
-
 }

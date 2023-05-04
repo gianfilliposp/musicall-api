@@ -15,4 +15,7 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun existsByEventDateAndFinalized(eventDate: LocalDate, b: Boolean): Boolean
     @Query("SELECT count(e) > 0 FROM Event e WHERE e.id = :id AND e.user.id = :userId AND e.finalized = false")
     fun existsByIdAndUserIdAndFinalizedFalse(id: Long, userId: Long): Boolean
+
+    @Query("SELECT e.id FROM Event e WHERE e.id = :id AND e.user.id = :userId AND e.finalized = false")
+    fun findIdByIdAndUserIdAndFinalizedFalse(id: Long, userId: Long): Long?
 }

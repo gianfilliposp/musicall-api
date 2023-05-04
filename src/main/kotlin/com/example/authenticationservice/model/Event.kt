@@ -56,7 +56,18 @@ data class Event
                 durationHours =  createEventRequest.durationHours!!
         )
 
-        constructor() :this (
+        constructor(id: Long) : this (
+            id = id,
+            user = User(),
+            name =  "",
+            cep =  "",
+            number = 0,
+            complement = "",
+            eventDate =  LocalDate.now(),
+            startHour = Time(0),
+            durationHours =  0
+        )
+        constructor() : this (
                 user = User(),
                 name =  "",
                 cep =  "",
