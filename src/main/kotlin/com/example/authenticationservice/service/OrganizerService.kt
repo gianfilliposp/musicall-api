@@ -62,7 +62,6 @@ class OrganizerService (
         }
 
        eventJobRepository.saveAll(eventJobs)
-
         return eventJobs.map{ EventJobDto(it) }
     }
 
