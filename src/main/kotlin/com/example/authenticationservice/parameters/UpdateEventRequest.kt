@@ -9,6 +9,7 @@ data class UpdateEventRequest (
         @JsonProperty("id") @field:NotNull val id: Long?,
         @JsonProperty("name") val name: String?,
         @JsonProperty("cep")  val cep: String?,
+        @JsonProperty("number") val number: Int,
         @JsonProperty("complement")  val complement: String?,
         @JsonProperty("eventDate") @field:DateTimeFormat(pattern = "yyyy/MM/dd") @field:Future(message = "Event date must be in the future") val eventDate: LocalDate?,
         @JsonProperty("durationHours") @field:Positive val durationHours: Int?

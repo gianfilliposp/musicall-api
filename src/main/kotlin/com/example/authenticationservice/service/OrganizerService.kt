@@ -98,6 +98,11 @@ class OrganizerService (
             hasChanges = true
         }
 
+        if (updateEventRequest.number != null) {
+            event.number = if (updateEventRequest.number == event.number) throw ResponseStatusException(HttpStatus.CONFLICT, "The number is the same") else updateEventRequest.number
+            hasChanges = true
+        }
+
         if (updateEventRequest.complement != null) {
             event.complement = if (updateEventRequest.complement == event.complement) throw ResponseStatusException(HttpStatus.CONFLICT, "The local is the same") else updateEventRequest.complement
             hasChanges = true
