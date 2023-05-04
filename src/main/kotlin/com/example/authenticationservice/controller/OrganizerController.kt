@@ -44,7 +44,7 @@ class OrganizerController (
     }
 
     @PutMapping("/event")
-    fun updateEvent(req : HttpServletRequest, @Valid @RequestBody updateEventRequest: UpdateEventRequest): ResponseEntity<EventDto> {
+    fun updateEvent(req : HttpServletRequest, @Valid @RequestBody updateEventRequest: UpdateEventRequest): ResponseEntity<CreateEventDto> {
         val eventDto = eventService.updateEvent(updateEventRequest, req)
 
         return ResponseEntity.status(200).body(eventDto)

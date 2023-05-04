@@ -80,7 +80,7 @@ class OrganizerService (
         eventRepository.deleteById(deleteEventRequest.id!!)
 }
 
-    fun updateEvent(updateEventRequest: UpdateEventRequest, req: HttpServletRequest): EventDto {
+    fun updateEvent(updateEventRequest: UpdateEventRequest, req: HttpServletRequest): CreateEventDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
         val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
@@ -113,6 +113,11 @@ class OrganizerService (
             hasChanges = true
         }
 
+        if (updateEventRequest.startHour != null){
+            event.startHour = if (updateEventRequest.startHour == event.startHour) throw ResponseStatusException(HttpStatus.CONFLICT, "The start hour is the same") else updateEventRequest.startHour
+            hasChanges = true
+        }
+
         if (updateEventRequest.durationHours != null) {
             event.durationHours = if (updateEventRequest.durationHours == event.durationHours) throw ResponseStatusException(HttpStatus.CONFLICT, "The duration in hours is the same") else updateEventRequest.durationHours
             hasChanges = true
@@ -122,7 +127,7 @@ class OrganizerService (
 
         eventRepository.save(event)
 
-        return EventDto(event)
+        return CreateEventDto(event)
     }
 
     @Transactional

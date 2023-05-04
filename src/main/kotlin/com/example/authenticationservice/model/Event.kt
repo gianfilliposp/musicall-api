@@ -1,7 +1,9 @@
 package com.example.authenticationservice.model
 
 import com.example.authenticationservice.parameters.CreateEventRequest
+import java.sql.Time
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -26,9 +28,11 @@ data class Event
 
         @Column(nullable = false)
         var complement: String,
-
         @Column(nullable = false)
         var eventDate: LocalDate,
+
+        @Column(nullable = false)
+        var startHour: Time,
 
         @Column(nullable = false)
         var durationHours : Int,
@@ -48,6 +52,7 @@ data class Event
                 number = createEventRequest.number!!,
                 complement = createEventRequest.complement!!,
                 eventDate =  createEventRequest.eventDate!!,
+                startHour =  createEventRequest.startHour!!,
                 durationHours =  createEventRequest.durationHours!!
         )
 
@@ -58,6 +63,7 @@ data class Event
                 number = 0,
                 complement = "",
                 eventDate =  LocalDate.now(),
+                startHour = Time(0),
                 durationHours =  0
         )
     }
