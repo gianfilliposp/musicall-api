@@ -21,6 +21,9 @@ data class Event
         var name: String,
 
         @Column(nullable = false)
+        var aboutEvent: String,
+
+        @Column(nullable = false)
         var cep: String,
 
         @Column(nullable = false)
@@ -28,6 +31,7 @@ data class Event
 
         @Column(nullable = false)
         var complement: String,
+
         @Column(nullable = false)
         var eventDate: LocalDate,
 
@@ -48,6 +52,7 @@ data class Event
         ) : this(
                 user = creator,
                 name =  createEventRequest.name!!,
+                aboutEvent = createEventRequest.aboutEvent!!,
                 cep =  createEventRequest.cep!!,
                 number = createEventRequest.number!!,
                 complement = createEventRequest.complement!!,
@@ -60,6 +65,7 @@ data class Event
             id = id,
             user = User(),
             name =  "",
+            aboutEvent = "",
             cep =  "",
             number = 0,
             complement = "",
@@ -70,6 +76,7 @@ data class Event
         constructor() : this (
                 user = User(),
                 name =  "",
+                aboutEvent = "",
                 cep =  "",
                 number = 0,
                 complement = "",

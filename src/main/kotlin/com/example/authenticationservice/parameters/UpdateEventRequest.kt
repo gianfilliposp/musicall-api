@@ -9,6 +9,7 @@ import javax.validation.constraints.*
 data class UpdateEventRequest (
         @JsonProperty("id") @field:NotNull val id: Long?,
         @JsonProperty("name") val name: String?,
+        @JsonProperty("aboutEvent") val aboutEvent: String?,
         @JsonProperty("cep")  val cep: String?,
         @JsonProperty("number") val number: Int,
         @JsonProperty("complement")  val complement: String?,

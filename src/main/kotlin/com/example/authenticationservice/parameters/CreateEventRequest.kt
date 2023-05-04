@@ -16,6 +16,7 @@ import javax.validation.constraints.*
 
 data class CreateEventRequest (
         @JsonProperty("name") @field:NotNull @field:NotBlank val name: String?,
+        @JsonProperty("aboutEvent") @field:NotNull @field:NotBlank val aboutEvent: String?,
         @JsonProperty("cep") @field:Pattern(regexp = "^\\d{5}-\\d{3}$", message = "Invalid CEP format") @field:NotNull @field:NotBlank val cep: String?,
         @JsonProperty("number") @field:NotNull @field:Min(1) val number: Int?,
         @JsonProperty("complement")  @field:NotNull @field:NotBlank val complement: String?,

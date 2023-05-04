@@ -91,6 +91,11 @@ class OrganizerService (
             hasChanges = true
         }
 
+        if (updateEventRequest.aboutEvent != null) {
+            event.aboutEvent = if (updateEventRequest.aboutEvent == event.aboutEvent) throw ResponseStatusException(HttpStatus.CONFLICT, "The aboutEvent is the same") else updateEventRequest.aboutEvent
+            hasChanges = true
+        }
+
         if (updateEventRequest.cep != null) {
             event.cep = if (updateEventRequest.cep == event.cep) throw ResponseStatusException(HttpStatus.CONFLICT, "The cep is the same") else updateEventRequest.cep
             hasChanges = true
