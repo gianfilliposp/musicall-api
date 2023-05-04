@@ -9,6 +9,7 @@ import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.JobRequest
 import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.service.OrganizerService
+import com.sun.istack.NotNull
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -56,9 +57,9 @@ class OrganizerController (
         return ResponseEntity.status(200).build()
     }
 
-    @DeleteMapping("/event-job")
-    fun deleteEventJob(req : HttpServletRequest, @Valid @RequestBody deleteEventJobRequest: DeleteEventJobRequest): ResponseEntity<Void> {
-        eventService.deleteEventJob(req, deleteEventJobRequest)
+    @DeleteMapping("/event-job/{id}")
+    fun deleteEventJob(req : HttpServletRequest, @PathVariable("id") @Valid @NotNull id: Long?): ResponseEntity<Void> {
+        eventService.deleteEventJob(req, id)
 
         return ResponseEntity.status(200).build()
     }

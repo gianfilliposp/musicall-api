@@ -11,7 +11,7 @@ import javax.persistence.*
 data class User(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0,
+        var id: Long = 0,
 
         @Enumerated(EnumType.STRING)
         @Column(nullable = false)

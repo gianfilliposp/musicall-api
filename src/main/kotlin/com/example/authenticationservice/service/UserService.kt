@@ -5,6 +5,10 @@ import com.example.authenticationservice.dao.NotificationRepository
 import com.example.authenticationservice.dao.UserRepository
 import com.example.authenticationservice.dto.JobRequestDto
 import com.example.authenticationservice.dto.NotificationTypeDto
+import com.example.authenticationservice.dto.TypeUserDto
+import com.example.authenticationservice.model.JobRequest
+import com.example.authenticationservice.model.Notification
+import com.example.authenticationservice.model.User
 import com.example.authenticationservice.parameters.DeleteUserRequest
 import com.example.authenticationservice.parameters.EmailResetRequest
 import com.example.authenticationservice.parameters.SetEmailRequest
@@ -22,7 +26,9 @@ class UserService (
         @Autowired private val userRepository: UserRepository,
         @Autowired private val jwtTokenProvider: JwtTokenProvider,
         @Autowired private val notificationRepository: NotificationRepository,
-        @Autowired private val jobRequestRepository: JobRequestRepository
+        @Autowired private val jobRequestRepository: JobRequestRepository,
+        @Autowired private val musicianService: MusicianService,
+        @Autowired private val organizerService: OrganizerService
 ) {
     fun deleteUser(req: HttpServletRequest, deleteUserRequest: DeleteUserRequest) {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
@@ -75,5 +81,26 @@ class UserService (
 
         notificationRepository.deleteById(notificationId)
         if (deleteNotificationDto.notificationType == NotificationTypeDto.REQUEST) jobRequestRepository.deleteById(deleteNotificationDto.fkJobRequest)
+    }
+
+    fun approveJobRequest(req: HttpServletRequest, jobRequestId: Long?) {
+        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+        val typeUser = jwtTokenProvider.getType(token)
+        if (typeUser == TypeUserDto.ORG) organizerService.approveJobRequest(req, id)
+
+        val user = User()
+        user.id = id
+
+        val jobRequest = JobRequest()
+        jobRequest.id = jobRequestId!!
+
+        notificationRepository.save(
+            Notification(
+                user = user,
+                jobRequest = jobRequest,
+                notificationType = NotificationTypeDto.CONFIRM
+            )
+        )
     }
 }

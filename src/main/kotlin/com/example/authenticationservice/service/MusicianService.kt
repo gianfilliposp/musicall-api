@@ -3,10 +3,7 @@ package com.example.authenticationservice.service
 import com.example.authenticationservice.parameters.UpdateMusicianRequest
 import com.example.authenticationservice.utils.GoogleMapsUtils
 import com.example.authenticationservice.dao.*
-import com.example.authenticationservice.dto.EventDto
-import com.example.authenticationservice.dto.MusicianDto
-import com.example.authenticationservice.dto.InstrumentsDto
-import com.example.authenticationservice.dto.NotificationTypeDto
+import com.example.authenticationservice.dto.*
 import com.example.authenticationservice.mapper.MusicianMapper
 import com.example.authenticationservice.model.*
 import com.example.authenticationservice.parameters.CreateJobRequestRequest
@@ -179,4 +176,5 @@ class MusicianService (
         notificationRepository.deleteByJobRequestId(deleteJobRequestDto.id)
         jobRequestRepository.deleteById(deleteJobRequestDto.id)
     }
+
 }

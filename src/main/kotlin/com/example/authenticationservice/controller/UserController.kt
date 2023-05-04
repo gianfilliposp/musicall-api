@@ -64,6 +64,13 @@ class UserController (
         return ResponseEntity.status(200).build()
     }
 
+    @PostMapping("/event/job-request/{id}")
+    fun approveJobRequest(req: HttpServletRequest, @PathVariable("id") @Valid @NotNull id: Long?): ResponseEntity<Void> {
+        userService.approveJobRequest(req, id)
+
+        return ResponseEntity.status(200).build()
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidJwtAuthenticationException::class)
     fun handleValidationExceptions(ex: InvalidJwtAuthenticationException): Map<String, String> {

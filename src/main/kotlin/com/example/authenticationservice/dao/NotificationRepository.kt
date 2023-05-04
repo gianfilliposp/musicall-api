@@ -29,4 +29,8 @@ interface NotificationRepository: JpaRepository<Notification, Long> {
     @Modifying
     @Query("delete from Notification notification where notification.jobRequest.id = :fkEventJob ")
     fun deleteByJobRequestId(fkEventJob: Long)
+
+    @Modifying
+     fun deleteByJobRequestEventJobEventId(eventId: Long)
 }
+//    @Query("delete from Notification notification where notification.jobRequest.eventJob.event.id = :eventId")

@@ -6,7 +6,7 @@ import javax.persistence.*
 class JobRequest (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "event_job_id", nullable = false)

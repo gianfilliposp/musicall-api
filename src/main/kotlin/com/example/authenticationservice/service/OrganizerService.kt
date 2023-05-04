@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 import javax.servlet.http.HttpServletRequest
@@ -29,6 +30,8 @@ class OrganizerService (
     @Autowired private val jwtTokenProvider: JwtTokenProvider,
     @Autowired private val userRepository: UserRepository,
     @Autowired private val instrumentRepository: InstrumentRepository,
+    @Autowired private val jobRequestRepository: JobRequestRepository,
+    @Autowired private val notificationRepository: NotificationRepository,
     @Autowired private val eventJobRepository : EventJobRepository
 ) {
     fun createEvent(createEventRequest: CreateEventRequest, req : HttpServletRequest) : CreateEventDto {
@@ -64,14 +67,18 @@ class OrganizerService (
         return eventJobs.map{ EventJobDto(it) }
     }
 
+    @Transactional
     fun deleteEvent(req: HttpServletRequest, deleteEventRequest: DeleteEventRequest) {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        val event = eventRepository.findByIdAndUserAndFinalized(deleteEventRequest.id!!, user, false) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find this event")
 
-        eventRepository.delete(event)
-    }
+        if (!eventRepository.existsByIdAndUserIdAndFinalizedFalse(deleteEventRequest.id!!, id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find this event")
+
+        notificationRepository.deleteByJobRequestEventJobEventId(deleteEventRequest.id!!)
+        jobRequestRepository.deleteByEventJobEventId(deleteEventRequest.id!!)
+        eventJobRepository.deleteByEventId(deleteEventRequest.id!!)
+        eventRepository.deleteById(deleteEventRequest.id!!)
+}
 
     fun updateEvent(updateEventRequest: UpdateEventRequest, req: HttpServletRequest): EventDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
@@ -113,13 +120,25 @@ class OrganizerService (
         return EventDto(event)
     }
 
-    fun deleteEventJob(req: HttpServletRequest, deleteEventJobRequest: DeleteEventJobRequest) {
+    @Transactional
+    fun deleteEventJob(req: HttpServletRequest, eventJobId: Long?) {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        val event = eventRepository.findByIdAndUserAndFinalized(deleteEventJobRequest.fkEvent!!, user, false) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find this event")
-        if (!eventJobRepository.existsByIdAndEvent(deleteEventJobRequest.fkEvent!!, event)) throw  ResponseStatusException(HttpStatus.NOT_FOUND, "You cannot delete this event job")
 
-        eventJobRepository.deleteById(deleteEventJobRequest.id!!)
+        if (!eventJobRepository.existsByIdAndEventUserIdAndEventFinalizedFalse(eventJobId!!, id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find this event job")
+
+        notificationRepository.deleteByJobRequestId(eventJobId!!)
+        jobRequestRepository.deleteByEventJobId(eventJobId)
+        eventJobRepository.deleteById(eventJobId)
+    }
+
+    @Transactional
+    fun approveJobRequest(req: HttpServletRequest, jobRequestId: Long?) {
+        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+
+        if (!jobRequestRepository.existsByIdAndUserIdAndMusicianConfirmedTrue(jobRequestId!!, id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "You cannot approve this job request")
+
+        jobRequestRepository.updateOrganizerConfirmedTrueById(jobRequestId)
     }
 }

@@ -3,6 +3,7 @@ package com.example.authenticationservice.dao
 import com.example.authenticationservice.dto.DeleteJobRequestDto
 import com.example.authenticationservice.model.JobRequest
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
 interface JobRequestRepository: JpaRepository<JobRequest, Long> {
@@ -17,4 +18,16 @@ interface JobRequestRepository: JpaRepository<JobRequest, Long> {
      """
     )
     fun findIdAndOrganizerConfirmedByEventJobIdAndMusicianId(fkEventJob: Long, musicianId: Long): DeleteJobRequestDto?
+
+    @Query("SELECT COUNT(j) > 0 FROM JobRequest j WHERE j.id = :id AND j.eventJob.event.user.id = :userId AND j.musicianConfirmed = true")
+    fun existsByIdAndUserIdAndMusicianConfirmedTrue(id:Long, userId: Long): Boolean
+
+    @Modifying
+    @Query("UPDATE JobRequest j SET j.organizerConfirmed = true WHERE j.id = :id")
+    fun updateOrganizerConfirmedTrueById(id: Long)
+
+    @Modifying
+    fun deleteByEventJobId(eventJobId: Long)
+    @Modifying
+    fun deleteByEventJobEventId(eventId: Long)
 }
