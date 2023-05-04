@@ -22,6 +22,9 @@ data class Event
         var cep: String,
 
         @Column(nullable = false)
+        var number: Int,
+
+        @Column(nullable = false)
         var complement: String,
 
         @Column(nullable = false)
@@ -42,6 +45,7 @@ data class Event
                 user = creator,
                 name =  createEventRequest.name!!,
                 cep =  createEventRequest.cep!!,
+                number = createEventRequest.number!!,
                 complement = createEventRequest.complement!!,
                 eventDate =  createEventRequest.eventDate!!,
                 durationHours =  createEventRequest.durationHours!!
@@ -51,6 +55,7 @@ data class Event
                 user = User(),
                 name =  "",
                 cep =  "",
+                number = 0,
                 complement = "",
                 eventDate =  LocalDate.now(),
                 durationHours =  0

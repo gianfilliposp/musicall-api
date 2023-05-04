@@ -22,21 +22,21 @@ VALUES ('2000-01-01', 'c111cf08-a6e8-4611-b624-e1d4c4a45978', '12345678901', 'jo
 INSERT INTO musician (user_id, cep, description)
 VALUES (2, '03366-010', 'Tá ligado né pai');
 
-INSERT INTO event (user_id, name, cep, complement, event_date, duration_hours, finalized)
+INSERT INTO event (user_id, name, cep, number, complement, event_date, duration_hours, finalized)
 VALUES
-  (1, 'My Event - AL', '01414-001', 'My Complement', '2024-01-02', 2, false),
-  (1, 'My Event - AL', '57000-000', 'My Complement', '2024-01-02', 2, false),
-  (1, 'My Event - AM', '69000-000', 'My Complement', '2024-01-04', 2, false),
-  (1, 'My Event - CE', '60000-000', 'My Complement', '2024-01-06', 2, false),
-  (1, 'My Event - GO', '74000-000', 'My Complement', '2024-01-09', 2, false),
-  (1, 'My Event - MA', '65000-000', 'My Complement', '2024-01-10', 2, false),
-  (1, 'My Event - MT', '78000-000', 'My Complement', '2024-01-11', 2, false),
-  (1, 'My Event - PB', '58000-000', 'My Complement', '2024-01-15', 2, false),
-  (1, 'My Event - PE', '50000-000', 'My Complement', '2024-01-17', 2, false),
-  (1, 'My Event - PI', '64000-000', 'My Complement', '2024-01-18', 2, false),
-  (1, 'My Event - RJ', '20000-000', 'My Complement', '2024-01-19', 2, false),
-  (1, 'My Event - RN', '59000-000', 'My Complement', '2024-01-20', 2, false),
-  (1, 'My Event - RS', '90000-000', 'My Complement', '2024-01-21', 2, false);
+  (1, 'My Event - AL', '01414-001', 2, 'My Complement', '2024-01-02', 2, false),
+  (1, 'My Event - AL', '57000-000', 2, 'My Complement', '2024-01-02', 2, false),
+  (1, 'My Event - AM', '69000-000', 2, 'My Complement', '2024-01-04', 2, false),
+  (1, 'My Event - CE', '60000-000', 2, 'My Complement', '2024-01-06', 2, false),
+  (1, 'My Event - GO', '74000-000', 2, 'My Complement', '2024-01-09', 2, false),
+  (1, 'My Event - MA', '65000-000', 2, 'My Complement', '2024-01-10', 2, false),
+  (1, 'My Event - MT', '78000-000', 2, 'My Complement', '2024-01-11', 2, false),
+  (1, 'My Event - PB', '58000-000', 2, 'My Complement', '2024-01-15', 2, false),
+  (1, 'My Event - PE', '50000-000', 2, 'My Complement', '2024-01-17', 2, false),
+  (1, 'My Event - PI', '64000-000', 2, 'My Complement', '2024-01-18', 2, false),
+  (1, 'My Event - RJ', '20000-000', 2, 'My Complement', '2024-01-19', 2, false),
+  (1, 'My Event - RN', '59000-000', 2, 'My Complement', '2024-01-20', 2, false),
+  (1, 'My Event - RS', '90000-000', 2, 'My Complement', '2024-01-21', 2, false);
 
 INSERT INTO event_job (event_id, instrument_id, musician_id)
 VALUES

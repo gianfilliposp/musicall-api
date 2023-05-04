@@ -7,6 +7,7 @@ data class CreateEventDto (
         val id: Long,
         val name: String,
         val cep: String,
+        val number: Int,
         val eventDate: LocalDate,
         val durationHours: Int
 ) {
@@ -14,6 +15,7 @@ data class CreateEventDto (
             id = event.id,
             name = event.name,
             cep = event.cep,
+            number = event.number,
             eventDate = event.eventDate,
             durationHours = event.durationHours
     )
