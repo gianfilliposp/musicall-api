@@ -7,5 +7,4 @@ import org.springframework.boot.runApplication
 class AuthenticationServiceApplication
 fun main(args: Array<String>) {
 	runApplication<AuthenticationServiceApplication>(*args)
-
 }

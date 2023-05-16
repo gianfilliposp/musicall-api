@@ -19,7 +19,7 @@ interface JobRequestRepository: JpaRepository<JobRequest, Long> {
     )
     fun findIdAndOrganizerConfirmedByEventJobIdAndMusicianId(fkEventJob: Long, musicianId: Long): DeleteJobRequestDto?
 
-    @Query("SELECT j.musician.user.id FROM JobRequest j WHERE j.id = :id AND j.eventJob.event.user.id = :userId AND j.musicianConfirmed = true")
+    @Query("SELECT j.musician.user.id FROM JobRequest j WHERE j.id = :id AND j.eventJob.event.user.id = :userId AND j.musicianConfirmed = true AND j.organizerConfirmed = false")
     fun findUserIdByIdAndUserIdAndMusicianConfirmedTrue(id:Long, userId: Long): Long?
 
     @Modifying

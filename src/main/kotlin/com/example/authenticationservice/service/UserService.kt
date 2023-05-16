@@ -78,7 +78,7 @@ class UserService (
         val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
 
-        val deleteNotificationDto = notificationRepository.findDeleteNotificationDtoByUserIdAndNotificationId(id, notificationId!!) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found")
+        val deleteNotificationDto = notificationRepository.findDeleteNotificationDtoByUserIdAndNotificationId(id, notificationId!!, NotificationTypeDto.REQUEST) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found")
 
         notificationRepository.deleteById(notificationId)
         if (deleteNotificationDto.notificationType == NotificationTypeDto.REQUEST) jobRequestRepository.deleteById(deleteNotificationDto.fkJobRequest)

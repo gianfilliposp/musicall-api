@@ -2,6 +2,7 @@ package com.example.authenticationservice.dao
 
 import com.example.authenticationservice.dto.DeleteNotificationDto
 import com.example.authenticationservice.dto.JobRequestDto
+import com.example.authenticationservice.dto.NotificationTypeDto
 import com.example.authenticationservice.model.Notification
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -23,8 +24,9 @@ interface NotificationRepository: JpaRepository<Notification, Long> {
             from Notification notification
                     where notification.user.id = :userId
                         and notification.id = :notificationId
+                            and notification.notificationType = :notificationType
     """)
-    fun findDeleteNotificationDtoByUserIdAndNotificationId(userId: Long, notificationId: Long): DeleteNotificationDto?
+    fun findDeleteNotificationDtoByUserIdAndNotificationId(userId: Long, notificationId: Long, notificationType: NotificationTypeDto): DeleteNotificationDto?
 
     @Modifying
     @Query("delete from Notification notification where notification.jobRequest.id = :fkEventJob ")
