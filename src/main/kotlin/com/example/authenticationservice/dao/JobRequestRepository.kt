@@ -19,8 +19,8 @@ interface JobRequestRepository: JpaRepository<JobRequest, Long> {
     )
     fun findIdAndOrganizerConfirmedByEventJobIdAndMusicianId(fkEventJob: Long, musicianId: Long): DeleteJobRequestDto?
 
-    @Query("SELECT COUNT(j) > 0 FROM JobRequest j WHERE j.id = :id AND j.eventJob.event.user.id = :userId AND j.musicianConfirmed = true")
-    fun existsByIdAndUserIdAndMusicianConfirmedTrue(id:Long, userId: Long): Boolean
+    @Query("SELECT j.musician.user.id FROM JobRequest j WHERE j.id = :id AND j.eventJob.event.user.id = :userId AND j.musicianConfirmed = true")
+    fun findUserIdByIdAndUserIdAndMusicianConfirmedTrue(id:Long, userId: Long): Long?
 
     @Modifying
     @Query("UPDATE JobRequest j SET j.organizerConfirmed = true WHERE j.id = :id")

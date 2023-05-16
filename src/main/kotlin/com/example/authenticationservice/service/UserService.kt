@@ -87,20 +87,7 @@ class UserService (
         val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
         val typeUser = jwtTokenProvider.getType(token)
-        if (typeUser == TypeUserDto.ORG) organizerService.approveJobRequest(req, id)
+        if (typeUser == TypeUserDto.ORG) organizerService.approveJobRequest(id, jobRequestId)
 
-        val user = User()
-        user.id = id
-
-        val jobRequest = JobRequest()
-        jobRequest.id = jobRequestId!!
-
-        notificationRepository.save(
-            Notification(
-                user = user,
-                jobRequest = jobRequest,
-                notificationType = NotificationTypeDto.CONFIRM
-            )
-        )
     }
 }

@@ -2,9 +2,8 @@ package com.example.authenticationservice.service
 
 import com.example.authenticationservice.dao.*
 import com.example.authenticationservice.dto.*
-import com.example.authenticationservice.model.Event
-import com.example.authenticationservice.model.EventJob
-import com.example.authenticationservice.model.Instrument
+import com.example.authenticationservice.model.*
+import com.example.authenticationservice.model.JobRequest
 import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.security.JwtTokenProvider
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -146,12 +145,22 @@ class OrganizerService (
     }
 
     @Transactional
-    fun approveJobRequest(req: HttpServletRequest, jobRequestId: Long?) {
-        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
-        val id = jwtTokenProvider.getId(token).toLong()
-
-        if (!jobRequestRepository.existsByIdAndUserIdAndMusicianConfirmedTrue(jobRequestId!!, id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "You cannot approve this job request")
-
+    fun approveJobRequest(id: Long, jobRequestId: Long?) {
+        val userId = jobRequestRepository.findUserIdByIdAndUserIdAndMusicianConfirmedTrue(jobRequestId!!, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You cannot approve this job request")
         jobRequestRepository.updateOrganizerConfirmedTrueById(jobRequestId)
+
+        val user = User()
+        user.id = userId
+
+        val jobRequest = JobRequest()
+        jobRequest.id = jobRequestId!!
+
+        notificationRepository.save(
+            Notification(
+                user = user,
+                jobRequest = jobRequest,
+                notificationType = NotificationTypeDto.CONFIRM
+            )
+        )
     }
 }

@@ -11,7 +11,7 @@ import javax.persistence.Tuple
 
 interface NotificationRepository: JpaRepository<Notification, Long> {
     @Query("""
-        select new com.example.authenticationservice.dto.JobRequestDto(notification.id, notification.jobRequest)
+        select new com.example.authenticationservice.dto.JobRequestDto(notification.id, notification.notificationType, notification.jobRequest)
             from Notification notification
                     where notification.user.id = :userId
                         order by notification.id desc

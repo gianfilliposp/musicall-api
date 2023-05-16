@@ -5,14 +5,18 @@ import com.example.authenticationservice.model.JobRequest
 class
 JobRequestDto (
    val id: Long,
+   val jobRequestId: Long,
+   val typeDto: NotificationTypeDto,
    val musicianConfirmed: Boolean,
    val organizerConfirmed: Boolean,
    val eventJobDto: JobRequestEventJobDto,
    val eventDto: JobRequestEventDto,
    val musicianFk: Long
 ) {
-   constructor(notificationId: Long, jobRequest: JobRequest): this(
+   constructor(notificationId: Long, notificationTypeDto: NotificationTypeDto, jobRequest: JobRequest): this(
       id = notificationId,
+      jobRequestId = jobRequest.id,
+      typeDto = notificationTypeDto,
       musicianConfirmed = jobRequest.musicianConfirmed,
       organizerConfirmed = jobRequest.organizerConfirmed,
       eventJobDto = JobRequestEventJobDto(jobRequest.eventJob.id, jobRequest.eventJob.event.id, jobRequest.eventJob.instrument.name),
@@ -22,6 +26,8 @@ JobRequestDto (
 
    constructor() : this(
         id = 0,
+        jobRequestId = 0,
+        typeDto = NotificationTypeDto.REQUEST,
         musicianConfirmed = false,
         organizerConfirmed = false,
         eventJobDto = JobRequestEventJobDto(),
