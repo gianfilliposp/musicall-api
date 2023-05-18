@@ -27,42 +27,48 @@ import javax.validation.Valid
 @RequestMapping("/org")
 @SecurityRequirement(name = "Bearer Authentication")
 class OrganizerController (
-        @Autowired private val eventService : OrganizerService
+        @Autowired private val organizerService : OrganizerService
 ) {
     @PostMapping("/event")
     fun createEvent(req : HttpServletRequest, @Valid @RequestBody createEventRequest: CreateEventRequest) : ResponseEntity<CreateEventDto> {
-        val createEventDto = eventService.createEvent(createEventRequest, req)
+        val createEventDto = organizerService.createEvent(createEventRequest, req)
 
         return ResponseEntity.status(201).body(createEventDto)
     }
 
     @PostMapping("/event/job")
     fun createEventJob(req : HttpServletRequest, @Valid @RequestBody createEventJobRequest: CreateEventJobRequest) : ResponseEntity<List<EventJobDto>> {
-        val eventJobsDto : List<EventJobDto> = eventService.createEventJob(createEventJobRequest, req)
+        val eventJobsDto : List<EventJobDto> = organizerService.createEventJob(createEventJobRequest, req)
 
         return ResponseEntity.status(201).body(eventJobsDto)
     }
 
     @PutMapping("/event")
     fun updateEvent(req : HttpServletRequest, @Valid @RequestBody updateEventRequest: UpdateEventRequest): ResponseEntity<CreateEventDto> {
-        val eventDto = eventService.updateEvent(updateEventRequest, req)
+        val eventDto = organizerService.updateEvent(updateEventRequest, req)
 
         return ResponseEntity.status(200).body(eventDto)
     }
 
     @DeleteMapping("/event")
     fun deleteEvent(req : HttpServletRequest, @Valid @RequestBody deleteEventRequest: DeleteEventRequest): ResponseEntity<Void> {
-        eventService.deleteEvent(req, deleteEventRequest)
+        organizerService.deleteEvent(req, deleteEventRequest)
 
         return ResponseEntity.status(200).build()
     }
 
     @DeleteMapping("/event-job/{id}")
     fun deleteEventJob(req : HttpServletRequest, @PathVariable("id") @Valid @NotNull id: Long?): ResponseEntity<Void> {
-        eventService.deleteEventJob(req, id)
+        organizerService.deleteEventJob(req, id)
 
         return ResponseEntity.status(200).build()
     }
+//    @GetMapping("/musician")
+//    fun findEventsByLocation(req: HttpServletRequest, eventId: Long) : ResponseEntity<List<EventDto>> {
+//        val events = organizerService.findEventsByLocation(req, )
+//
+//        return ResponseEntity.status(200).body(events)
+//    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException::class)
