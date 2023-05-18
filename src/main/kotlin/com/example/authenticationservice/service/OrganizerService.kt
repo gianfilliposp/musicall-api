@@ -6,19 +6,12 @@ import com.example.authenticationservice.model.*
 import com.example.authenticationservice.model.JobRequest
 import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.security.JwtTokenProvider
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
-import java.time.LocalDate
 import javax.servlet.http.HttpServletRequest
-import javax.validation.constraints.Future
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Positive
 
 @Service
 class OrganizerService (
@@ -163,4 +156,5 @@ class OrganizerService (
             )
         )
     }
+
 }
