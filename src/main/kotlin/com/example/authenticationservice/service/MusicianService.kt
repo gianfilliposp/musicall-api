@@ -75,31 +75,21 @@ class MusicianService (
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
         val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as a musician")
-        val instrumentsHash = musicianRepository.findInstrumentIdsByUserId(id).toHashSet()
-        if (instrumentsHash.isEmpty()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You need to add instruments first")
+        val instrumentsId = musicianRepository.findInstrumentIdsByUserId(id)
+        if (instrumentsId.isEmpty()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You need to add instruments first")
 
-        var events = eventRepository.findUnfinalizedEventsAfterOrEqual(LocalDate.now())
+        var events = eventRepository.findUnfinalizedEventsAfterOrEqual(LocalDate.now(), instrumentsId)
 
-        val eventsRes = mutableListOf<Event>()
-        event@ for (event in events) {
-            for (job in event.eventJob) {
-                if (instrumentsHash.contains(job.instrument.id)) {
-                    eventsRes.add(event)
-                    continue@event
-                }
-            }
-        }
-
-        if (eventsRes.size < 1) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No event was found for you")
+        if (events.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No event was found for you")
 
         var destinations: String = ""
-        eventsRes.forEach { destinations+=it.cep + "|"}
+        events.forEach { destinations+=it.cep + "|"}
         destinations = destinations.dropLast(1)
 
         val response = googleMapsService.getDistanceMatrix(cep, destinations)
         val mapper = ObjectMapper()
         val data = mapper.readValue(response, Map::class.java)
-        val eventsDto = eventsRes.map { EventDto(it) }
+        val eventsDto = events.map { EventDto(it) }
 
         val rows = data["rows"] as List<*>
         for ((rowIndex, row) in rows.withIndex()) {
