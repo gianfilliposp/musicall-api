@@ -6,6 +6,8 @@ import com.example.authenticationservice.model.*
 import com.example.authenticationservice.model.JobRequest
 import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.security.JwtTokenProvider
+import com.example.authenticationservice.utils.GoogleMapsUtils
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -21,7 +23,9 @@ class OrganizerService (
     @Autowired private val instrumentRepository: InstrumentRepository,
     @Autowired private val jobRequestRepository: JobRequestRepository,
     @Autowired private val notificationRepository: NotificationRepository,
-    @Autowired private val eventJobRepository : EventJobRepository
+    @Autowired private val eventJobRepository : EventJobRepository,
+    @Autowired private val musicianInstrumentRepository: MusicianInstrumentRepository,
+    @Autowired private val googleMapsService: GoogleMapsUtils
 ) {
     fun createEvent(createEventRequest: CreateEventRequest, req : HttpServletRequest) : CreateEventDto {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
@@ -155,6 +159,35 @@ class OrganizerService (
                 notificationType = NotificationTypeDto.CONFIRM
             )
         )
+    }
+    fun findMusicianByEventLocation(req: HttpServletRequest, eventJobId: Long): List<MusicianEventJobDto> {
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val userId = jwtTokenProvider.getId(token).toLong()
+        val instrumentIdAndEventCepDto = eventJobRepository.findInstrumentIdAndEventCepByIdAndUserId(eventJobId, userId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You can't search a musician for this event")
+        val musiciansEventJobDto = musicianInstrumentRepository.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId)
+
+        var destinations: String = ""
+        musiciansEventJobDto.forEach { destinations+=it.cep + "|"}
+        destinations = destinations.dropLast(1)
+
+        val response = googleMapsService.getDistanceMatrix(instrumentIdAndEventCepDto.cep, destinations)
+        val mapper = ObjectMapper()
+        val data = mapper.readValue(response, Map::class.java)
+
+        val rows = data["rows"] as List<*>
+        for ((rowIndex, row) in rows.withIndex()) {
+            if (row is Map<*, *>) {
+                val elements = row["elements"] as List<*>
+                for ((elementIndex, element) in elements.withIndex()) {
+                    if (element is Map<*, *> && element["status"] as? String == "OK") {
+                        val distance = (element["distance"] as Map<String, Any>)["value"] as Int
+                        musiciansEventJobDto[elementIndex].distance = distance
+                    }
+                }
+            }
+        }
+
+       return musiciansEventJobDto.sortedBy { it.distance }
     }
 
 }

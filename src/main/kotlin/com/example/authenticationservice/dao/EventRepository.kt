@@ -25,4 +25,5 @@ interface EventRepository : JpaRepository<Event, Long> {
 
     @Query("SELECT e.id FROM Event e WHERE e.id = :id AND e.user.id = :userId AND e.finalized = false")
     fun findIdByIdAndUserIdAndFinalizedFalse(id: Long, userId: Long): Long?
+  abstract fun findByIdAndUserIdAndFinalizedFalse(eventId: Long, id: Long): Nothing?
 }

@@ -1,13 +1,10 @@
 package com.example.authenticationservice.dao
 
-import com.example.authenticationservice.dto.TypeUserDto
+import com.example.authenticationservice.dto.MusicianEventJobDto
 import com.example.authenticationservice.model.Musician
 import com.example.authenticationservice.model.User
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
-import javax.transaction.Transactional
 
 
 interface MusicianRepository : JpaRepository<Musician, Long> {
@@ -27,4 +24,5 @@ interface MusicianRepository : JpaRepository<Musician, Long> {
 
     @Query("SELECT m.id FROM Musician m WHERE m.user.id = :fkUser")
     fun findIdByUserId(fkUser: Long): Long?
+
 }

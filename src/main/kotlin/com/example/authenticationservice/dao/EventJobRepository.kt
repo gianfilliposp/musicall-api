@@ -1,5 +1,6 @@
 package com.example.authenticationservice.dao
 
+import com.example.authenticationservice.dto.InstrumentIdAndEventCepDto
 import com.example.authenticationservice.model.Event
 import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.Musician
@@ -22,4 +23,7 @@ interface EventJobRepository : JpaRepository<EventJob, Long> {
     fun existsByEventDateAndMusicianId(eventDate: LocalDate, musicianId: Long): Boolean
     @Modifying
     fun deleteByEventId(eventId: Long)
+
+    @Query("SELECT new com.example.authenticationservice.dto.InstrumentIdAndEventCepDto(instrument.id, e.event.cep) FROM EventJob e WHERE e.id = :eventJobId AND e.event.user.id = :userId")
+    fun findInstrumentIdAndEventCepByIdAndUserId(eventJobId: Long, userId: Long): InstrumentIdAndEventCepDto?
 }

@@ -1,9 +1,6 @@
 package com.example.authenticationservice.controller
 
-import com.example.authenticationservice.dto.CreateEventDto
-import com.example.authenticationservice.dto.EventDto
-import com.example.authenticationservice.dto.EventJobDto
-import com.example.authenticationservice.dto.JobRequestDto
+import com.example.authenticationservice.dto.*
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.JobRequest
@@ -63,12 +60,13 @@ class OrganizerController (
 
         return ResponseEntity.status(200).build()
     }
-//    @GetMapping("/musician")
-//    fun findEventsByLocation(req: HttpServletRequest, eventId: Long) : ResponseEntity<List<EventDto>> {
-//        val events = organizerService.findEventsByLocation(req, )
-//
-//        return ResponseEntity.status(200).body(events)
-//    }
+
+    @GetMapping("/musician/event-job/{eventJobId}")
+    fun findMusicianByEventLocation(req: HttpServletRequest, @PathVariable("eventJobId") @Valid @NotNull eventJobId: Long) : ResponseEntity<List<MusicianEventJobDto>> {
+        val events = organizerService.findMusicianByEventLocation(req, eventJobId)
+
+        return ResponseEntity.status(200).body(events)
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException::class)
