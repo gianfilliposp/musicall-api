@@ -7,8 +7,9 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-
+import org.springframework.web.cors.CorsConfiguration
 
 @Configuration
 class SecurityConfig : WebSecurityConfigurerAdapter() {
@@ -37,5 +38,17 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .anyRequest().authenticated()
                 .and()
                 .apply(JwtConfigurator(jwtTokenProvider!!))
+                .and()
+                .cors()
+                .configurationSource { buildCorsConfiguration() }
+    }
+
+    private fun buildCorsConfiguration(): CorsConfiguration {
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("*")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
+        configuration.allowedHeaders =
+            listOf(HttpHeaders.CONTENT_TYPE, HttpHeaders.AUTHORIZATION)
+        return configuration
     }
 }
