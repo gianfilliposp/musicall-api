@@ -20,9 +20,6 @@ data class User(
         @Column(nullable = false)
         val name: String,
 
-        @Column(nullable = false)
-        val lastName: String,
-
         @Column(nullable = false, unique = true)
         val cpf: String,
 
@@ -63,7 +60,6 @@ data class User(
     ) : this(
             type = registerUserRequest.type!!,
             name = registerUserRequest.name!!,
-            lastName = registerUserRequest.lastName!!,
             cpf = registerUserRequest.cpf!!,
             birthDate = registerUserRequest.birthDate!!,
             telephone = registerUserRequest.telephone!!,
@@ -75,7 +71,6 @@ data class User(
     constructor() : this(
             type = TypeUserDto.NONE,
             name = "",
-            lastName = "",
             cpf = "",
             birthDate = LocalDate.now(),
             telephone = "",
