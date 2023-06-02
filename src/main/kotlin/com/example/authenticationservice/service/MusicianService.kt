@@ -1,14 +1,12 @@
 package com.example.authenticationservice.service
 
-import com.example.authenticationservice.parameters.UpdateMusicianRequest
 import com.example.authenticationservice.utils.GoogleMapsUtils
 import com.example.authenticationservice.dao.*
 import com.example.authenticationservice.dto.*
 import com.example.authenticationservice.mapper.MusicianMapper
 import com.example.authenticationservice.model.*
-import com.example.authenticationservice.parameters.CreateJobRequestRequest
-import com.example.authenticationservice.parameters.RegisterInstrumentRequest
-import com.example.authenticationservice.parameters.RegisterMusicianRequest
+import com.example.authenticationservice.model.JobRequest
+import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.security.JwtTokenProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +14,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
-import java.time.LocalDate
 import javax.servlet.http.HttpServletRequest
 import kotlin.collections.HashMap
 
@@ -71,14 +68,16 @@ class MusicianService (
 
         return musicianInstruments.map { InstrumentsDto(it.instrument.id, it.instrument.name) }
     }
-    fun getEventsByLocation(req: HttpServletRequest): List<EventDto> {
+    fun getEventsByLocation(filterEventsRequest: FilterEventsRequest, req: HttpServletRequest): List<EventDto> {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
         val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as a musician")
         val instrumentsId = musicianRepository.findInstrumentIdsByUserId(id)
         if (instrumentsId.isEmpty()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You need to add instruments first")
 
-        var events = eventRepository.findUnfinalizedEventsAfterOrEqual(LocalDate.now(), instrumentsId)
+        var events = eventRepository.findUnfinalizedEventsAfterOrEqual(filterEventsRequest, instrumentsId)
+
+        events.forEach { it.eventJob.forEach { println(it.instrument.id) } }
 
         if (events.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No event was found for you")
 
@@ -86,7 +85,7 @@ class MusicianService (
         events.forEach { destinations+=it.cep + "|"}
         destinations = destinations.dropLast(1)
 
-        val response = googleMapsService.getDistanceMatrix(cep, destinations)
+        val response = googleMapsService.getDistanceMatrix(filterEventsRequest.cep ?: cep, destinations)
         val mapper = ObjectMapper()
         val data = mapper.readValue(response, Map::class.java)
         val eventsDto = events.map { EventDto(it) }
@@ -118,7 +117,6 @@ class MusicianService (
 
         var hasChanges = false
 
-
         if (updateMusicianRequest.cep != null) {
             musician.cep = updateMusicianRequest.cep!!
             hasChanges = true
@@ -126,6 +124,11 @@ class MusicianService (
 
         if (updateMusicianRequest.description != null) {
             musician.description = updateMusicianRequest.description!!
+            hasChanges = true
+        }
+
+        if (updateMusicianRequest.imageUrl != null) {
+            musician.imageUrl = updateMusicianRequest.imageUrl!!
             hasChanges = true
         }
 
@@ -166,5 +169,4 @@ class MusicianService (
         notificationRepository.deleteByJobRequestId(deleteJobRequestDto.id)
         jobRequestRepository.deleteById(deleteJobRequestDto.id)
     }
-
 }

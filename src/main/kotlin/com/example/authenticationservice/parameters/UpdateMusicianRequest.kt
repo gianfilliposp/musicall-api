@@ -6,5 +6,6 @@ import javax.validation.constraints.NotNull
 
 class UpdateMusicianRequest (
     @JsonProperty("description") val description: String?,
-    @JsonProperty("cep") val cep: String?
+    @JsonProperty("cep") val cep: String?,
+    @JsonProperty("imageUrl") val imageUrl: String?
 )

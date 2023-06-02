@@ -1,12 +1,9 @@
 package com.example.authenticationservice.controller
 
 import com.example.authenticationservice.dto.*
-import com.example.authenticationservice.parameters.RegisterInstrumentRequest
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
-import com.example.authenticationservice.parameters.CreateJobRequestRequest
-import com.example.authenticationservice.parameters.RegisterMusicianRequest
-import com.example.authenticationservice.parameters.UpdateMusicianRequest
+import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.service.MusicianService
 import com.sun.istack.NotNull
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -56,8 +53,8 @@ class MusicianController (
     }
 
     @GetMapping("/event")
-    fun findEventsByLocation(req: HttpServletRequest) : ResponseEntity<List<EventDto>> {
-        val events = musicianService.getEventsByLocation(req)
+    fun findEventsByLocation(req: HttpServletRequest, @RequestBody @Valid filterEventsRequest: FilterEventsRequest) : ResponseEntity<List<EventDto>> {
+        val events = musicianService.getEventsByLocation(filterEventsRequest, req)
 
         return ResponseEntity.status(200).body(events)
     }

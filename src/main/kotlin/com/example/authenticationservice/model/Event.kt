@@ -41,6 +41,9 @@ data class Event
         @Column(nullable = false)
         var durationHours : Int,
 
+        @Column(nullable = false)
+        var imageUrl : String,
+
         @OneToMany(mappedBy = "event", cascade = [CascadeType.ALL], orphanRemoval = true)
         val eventJob: MutableList<EventJob> = mutableListOf()
     ) {
@@ -58,7 +61,8 @@ data class Event
                 complement = createEventRequest.complement!!,
                 eventDate =  createEventRequest.eventDate!!,
                 startHour =  createEventRequest.startHour!!,
-                durationHours =  createEventRequest.durationHours!!
+                durationHours =  createEventRequest.durationHours!!,
+                imageUrl = createEventRequest.imageUrl!!
         )
 
         constructor(id: Long) : this (
@@ -71,7 +75,8 @@ data class Event
             complement = "",
             eventDate =  LocalDate.now(),
             startHour = Time(0),
-            durationHours =  0
+            durationHours =  0,
+            imageUrl = ""
         )
         constructor() : this (
                 user = User(),
@@ -82,6 +87,7 @@ data class Event
                 complement = "",
                 eventDate =  LocalDate.now(),
                 startHour = Time(0),
-                durationHours =  0
+                durationHours =  0,
+                imageUrl = ""
         )
     }

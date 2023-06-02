@@ -18,6 +18,7 @@ data class EventDto(
         val eventDate: LocalDate,
         val startHour: Time,
         val durationHours: Int,
+        val imageUrl: String,
         val eventJobs: List<EventJobDto>
 ) {
         var distance: Int = Int.MAX_VALUE
@@ -30,6 +31,7 @@ data class EventDto(
             eventDate = event.eventDate,
             startHour = event.startHour,
             durationHours = event.durationHours,
+            imageUrl = event.imageUrl,
             eventJobs = event.eventJob.map { EventJobDto(it) }
     )
 }

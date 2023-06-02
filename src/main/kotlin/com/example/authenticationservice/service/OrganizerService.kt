@@ -25,6 +25,7 @@ class OrganizerService (
     @Autowired private val notificationRepository: NotificationRepository,
     @Autowired private val eventJobRepository : EventJobRepository,
     @Autowired private val musicianInstrumentRepository: MusicianInstrumentRepository,
+    @Autowired private val musicianService: MusicianService,
     @Autowired private val googleMapsService: GoogleMapsUtils
 ) {
     fun createEvent(createEventRequest: CreateEventRequest, req : HttpServletRequest) : CreateEventDto {
@@ -84,6 +85,11 @@ class OrganizerService (
 
         if (updateEventRequest.name != null) {
             event.name = if (updateEventRequest.name == event.name) throw ResponseStatusException(HttpStatus.CONFLICT, "The name is the same") else updateEventRequest.name
+            hasChanges = true
+        }
+
+        if (updateEventRequest.imageUrl != null) {
+            event.imageUrl = if (updateEventRequest.imageUrl == event.imageUrl) throw ResponseStatusException(HttpStatus.CONFLICT, "The imageUrl is the same") else updateEventRequest.imageUrl
             hasChanges = true
         }
 
@@ -189,5 +195,4 @@ class OrganizerService (
 
        return musiciansEventJobDto.sortedBy { it.distance }
     }
-
 }

@@ -24,5 +24,4 @@ interface MusicianRepository : JpaRepository<Musician, Long> {
 
     @Query("SELECT m.id FROM Musician m WHERE m.user.id = :fkUser")
     fun findIdByUserId(fkUser: Long): Long?
-
 }

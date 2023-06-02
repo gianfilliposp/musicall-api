@@ -46,7 +46,6 @@ class OrganizerController (
 
         return ResponseEntity.status(200).body(eventDto)
     }
-
     @DeleteMapping("/event")
     fun deleteEvent(req : HttpServletRequest, @Valid @RequestBody deleteEventRequest: DeleteEventRequest): ResponseEntity<Void> {
         organizerService.deleteEvent(req, deleteEventRequest)

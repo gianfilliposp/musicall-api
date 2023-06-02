@@ -22,6 +22,9 @@ data class Musician(
     @Column(nullable = false)
     var cep: String,
 
+    @Column(nullable = false)
+    var imageUrl: String,
+
     @OneToMany(mappedBy = "musician", cascade = [CascadeType.ALL], orphanRemoval = true)
     val musicianInstruments: MutableList<MusicianInstrument> = mutableListOf(),
 
@@ -31,12 +34,14 @@ data class Musician(
     constructor() : this(
         user = User(),
         description = "",
-        cep = ""
+        cep = "",
+        imageUrl = ""
     )
 
     constructor(registerMusicianRequest: RegisterMusicianRequest, user: User) : this(
         user = user,
         description = registerMusicianRequest.description!!,
-        cep = registerMusicianRequest.cep!!
+        cep = registerMusicianRequest.cep!!,
+        imageUrl = registerMusicianRequest.imageUrl!!
     )
 }

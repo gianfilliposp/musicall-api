@@ -56,7 +56,7 @@ class UserService (
         val id = jwtTokenProvider.getId(token).toLong()
         val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         if (user.confirmationToken != setEmailRequest.token) throw ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token")
-        if (user.email == user.newEmail) throw ResponseStatusException(HttpStatus.CONFLICT, "This is the email already")
+        if (user.email == user.newEmail) throw ResponseStatusException(HttpStatus.CONFLICT, "This is the email already registered")
 
         user.email = user.newEmail
         user.confirmationToken = ""

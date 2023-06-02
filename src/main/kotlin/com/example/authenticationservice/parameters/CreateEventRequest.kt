@@ -22,6 +22,7 @@ data class CreateEventRequest (
         @JsonProperty("complement")  @field:NotNull @field:NotBlank val complement: String?,
         @JsonProperty("eventDate") @field:NotNull @field:DateTimeFormat(pattern = "yyyy/MM/dd") @field:Future(message = "Event date must be in the future") val eventDate: LocalDate?,
         @JsonProperty("startHour") @field:NotNull @field:DateTimeFormat(pattern = "HH:mm") val startHour: Time?,
-        @JsonProperty("durationHours") @field:NotNull @field:Positive val durationHours: Int?
+        @JsonProperty("durationHours") @field:NotNull @field:Positive val durationHours: Int?,
+        @JsonProperty("imageUrl") @field:NotNull @field:Positive val imageUrl: String?
 ) {
 }
