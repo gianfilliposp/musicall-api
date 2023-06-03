@@ -24,11 +24,11 @@ VALUES (2, '03366-010', 'Tá ligado né pai', 'https://images-ext-1.discordapp.n
 
 INSERT INTO event (user_id, name, about_event, cep, number, complement, event_date, duration_hours, start_hour, finalized, image_url)
 VALUES
-  (1, 'My Event - AL', 'sei lá', '01414-001', 2, 'My Complement', '2024-01-02', 2, '00:00:00', false, 'https://images.pexels.com/photos/2592179/pexels-photo-2592179.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-  (1, 'My Event - AL', 'sei lá', '57000-000', 2, 'My Complement', '2024-01-02', 2, '00:00:00', false, 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg?auto=compress&cs=tinysrgb&w=1600'),
-  (1, 'My Event - AM', 'sei lá', '69000-000', 2, 'My Complement', '2024-01-04', 2, '00:00:00', false, 'https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1600'),
-  (1, 'My Event - CE', 'sei lá', '60000-000', 2, 'My Complement', '2024-01-06', 2, '00:00:00', false, 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1600'),
-  (1, 'My Event - GO', 'sei lá', '74000-000', 2, 'My Complement', '2024-01-09', 2, '00:00:00', false, 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1600'),
+  (1, 'My Event - AL', 'sei lá', '01414-001', 2, 'My Complement', '2024-01-02', 2, '00:00:00', false, 'https://images.pexels.com/photos/382297/pexels-photo-382297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+  (1, 'My Event - AL', 'sei lá', '57000-000', 2, 'My Complement', '2024-01-02', 2, '00:00:00', false, 'https://images-ext-1.discordapp.net/external/QnBKB1LcpvV8Psr90pcrstPhHhWLCtsbKIecrkCIeKk/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/1974100/pexels-photo-1974100.jpeg?width=1016&height=675'),
+  (1, 'My Event - AM', 'sei lá', '69000-000', 2, 'My Complement', '2024-01-04', 2, '00:00:00', false, 'https://images-ext-2.discordapp.net/external/a9Gx7jiF-nxz-kMrvPuHRE409oXBpdnl5w1dXjmUjkQ/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/751046/pexels-photo-751046.jpeg?width=1013&height=675'),
+  (1, 'My Event - CE', 'sei lá', '60000-000', 2, 'My Complement', '2024-01-06', 2, '00:00:00', false, 'https://images.pexels.com/photos/382297/pexels-photo-382297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+  (1, 'My Event - GO', 'sei lá', '74000-000', 2, 'My Complement', '2024-01-09', 2, '00:00:00', false, 'https://images.pexels.com/photos/382297/pexels-photo-382297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
   (1, 'My Event - MA', 'sei lá', '65000-000', 2, 'My Complement', '2024-01-10', 2, '00:00:00', false, 'https://images.pexels.com/photos/919734/pexels-photo-919734.jpeg?auto=compress&cs=tinysrgb&w=1600'),
   (1, 'My Event - MT', 'sei lá', '78000-000', 2, 'My Complement', '2024-01-11', 2, '00:00:00', false, 'https://images.pexels.com/photos/919734/pexels-photo-919734.jpeg?auto=compress&cs=tinysrgb&w=1600'),
   (1, 'My Event - PB', 'sei lá', '58000-000', 2, 'My Complement', '2024-01-15', 2, '00:00:00', false, 'https://images.pexels.com/photos/2747446/pexels-photo-2747446.jpeg?auto=compress&cs=tinysrgb&w=1600'),

@@ -77,7 +77,7 @@ class MusicianService (
 
         var events = eventRepository.findUnfinalizedEventsAfterOrEqual(filterEventsRequest, instrumentsId)
 
-        events.forEach { it.eventJob.forEach { println(it.instrument.id) } }
+        // events.forEach { it.eventJob.forEach { println(it.instrument.id) } }
 
         if (events.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No event was found for you")
 
