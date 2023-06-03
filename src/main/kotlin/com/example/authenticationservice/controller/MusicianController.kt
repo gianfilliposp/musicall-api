@@ -52,8 +52,8 @@ class MusicianController (
         return ResponseEntity.status(201).body(instrumentDto)
     }
 
-    @GetMapping("/event")
-    fun findEventsByLocation(req: HttpServletRequest, @RequestBody @Valid filterEventsRequest: FilterEventsRequest) : ResponseEntity<List<EventDto>> {
+    @PostMapping("/event")
+    fun findEventsByLocation(req: HttpServletRequest, @RequestBody @Valid filterEventsRequest: FilterEventsRequest) : ResponseEntity<List<EventSearchDto>> {
         val events = musicianService.getEventsByLocation(filterEventsRequest, req)
 
         return ResponseEntity.status(200).body(events)

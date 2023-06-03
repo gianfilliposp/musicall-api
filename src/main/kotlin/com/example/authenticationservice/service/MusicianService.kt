@@ -68,7 +68,7 @@ class MusicianService (
 
         return musicianInstruments.map { InstrumentsDto(it.instrument.id, it.instrument.name) }
     }
-    fun getEventsByLocation(filterEventsRequest: FilterEventsRequest, req: HttpServletRequest): List<EventDto> {
+    fun getEventsByLocation(filterEventsRequest: FilterEventsRequest, req: HttpServletRequest): List<EventSearchDto> {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
         val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as a musician")
@@ -76,8 +76,6 @@ class MusicianService (
         if (instrumentsId.isEmpty()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You need to add instruments first")
 
         var events = eventRepository.findUnfinalizedEventsAfterOrEqual(filterEventsRequest, instrumentsId)
-
-        events.forEach { it.eventJob.forEach { println(it.instrument.id) } }
 
         if (events.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No event was found for you")
 
@@ -88,7 +86,7 @@ class MusicianService (
         val response = googleMapsService.getDistanceMatrix(filterEventsRequest.cep ?: cep, destinations)
         val mapper = ObjectMapper()
         val data = mapper.readValue(response, Map::class.java)
-        val eventsDto = events.map { EventDto(it) }
+        val eventsDto = events
 
         val rows = data["rows"] as List<*>
         for ((rowIndex, row) in rows.withIndex()) {

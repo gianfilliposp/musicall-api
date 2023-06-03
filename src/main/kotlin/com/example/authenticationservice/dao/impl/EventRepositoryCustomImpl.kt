@@ -1,6 +1,7 @@
 package com.example.authenticationservice.dao.impl
 
 import com.example.authenticationservice.dao.EventRepositoryCustom
+import com.example.authenticationservice.dto.EventSearchDto
 import com.example.authenticationservice.model.Event
 import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.parameters.FilterEventsRequest
@@ -17,11 +18,19 @@ class EventRepositoryCustomImpl (
     override fun findUnfinalizedEventsAfterOrEqual(
         filterEventsRequest: FilterEventsRequest,
         instrumentsId: List<Long>
-    ): List<Event> {
+    ): List<EventSearchDto> {
         val cb = em.criteriaBuilder
-        val cq = cb.createQuery(Event::class.java)
+        val cq = cb.createQuery(EventSearchDto::class.java)
         val root = cq.from(Event::class.java)
-        cq.select(root)
+        cq.select(
+            cb.construct(
+                EventSearchDto::class.java,
+                root.get<Long>("id"),
+                root.get<String>("imageUrl"),
+                root.get<LocalDate>("eventDate"),
+                root.get<String>("cep")
+            )
+        ).distinct(true)
 
         val joinExec = root.join<Event, EventJob>("eventJob")
 
@@ -49,6 +58,6 @@ class EventRepositoryCustomImpl (
 
         val result = em.createQuery(cq).resultList
 
-        return result
+        return result.toList()
     }
 }
