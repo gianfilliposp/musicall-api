@@ -68,7 +68,7 @@ class MusicianService (
 
         return musicianInstruments.map { InstrumentsDto(it.instrument.id, it.instrument.name) }
     }
-    fun getEventsByLocation(filterEventsRequest: FilterEventsRequest, req: HttpServletRequest): List<EventSearchDto> {
+    fun getEventsByLocation(filterEventsRequest: FilterEventsRequest, req: HttpServletRequest): List<EventDto> {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val id = jwtTokenProvider.getId(token).toLong()
         val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as a musician")
@@ -88,6 +88,7 @@ class MusicianService (
         val response = googleMapsService.getDistanceMatrix(filterEventsRequest.cep ?: cep, destinations)
         val mapper = ObjectMapper()
         val data = mapper.readValue(response, Map::class.java)
+        val eventsDto = events.map { EventDto(it) }
 
         val rows = data["rows"] as List<*>
         for ((rowIndex, row) in rows.withIndex()) {
@@ -97,14 +98,14 @@ class MusicianService (
                     if (element is Map<*, *> && element["status"] as? String == "OK") {
                         val distance = (element["distance"] as Map<String, Any>)["value"] as Int
                         val address = (data["destination_addresses"] as List<String>)
-                        events[elementIndex].cep =  address[elementIndex]
-                        events[elementIndex].distance = distance
+                        eventsDto[elementIndex].cep =  address[elementIndex]
+                        eventsDto[elementIndex].distance = distance
                     }
                 }
             }
         }
 
-        return events.sortedBy { it.distance }
+        return eventsDto.sortedBy { it.distance }
     }
 
     fun updateMusician(updateMusicianRequest: UpdateMusicianRequest, req: HttpServletRequest) {

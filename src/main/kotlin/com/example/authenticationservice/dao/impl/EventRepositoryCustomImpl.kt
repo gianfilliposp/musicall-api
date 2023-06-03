@@ -18,14 +18,18 @@ class EventRepositoryCustomImpl (
     override fun findUnfinalizedEventsAfterOrEqual(
         filterEventsRequest: FilterEventsRequest,
         instrumentsId: List<Long>
-    ): List<EventSearchDto> {
+    ): List<Event> {
         val cb = em.criteriaBuilder
         val cq = cb.createQuery(Event::class.java)
         val root = cq.from(Event::class.java)
         cq.multiselect(
-            root.get<Long>("id"),
-            root.get<String>("imageUrl"),
-            root.get<LocalDate>("eventDate")
+            cb.construct(
+                Event::class.java,
+                cb.construct(EventSearchDto::class.java),
+                root.get<Long>("id"),
+                root.get<String>("imageUrl"),
+                root.get<LocalDate>("eventDate")
+            )
         ).distinct(true)
 
         val joinExec = root.join<Event, EventJob>("eventJob")
@@ -54,6 +58,6 @@ class EventRepositoryCustomImpl (
 
         val result = em.createQuery(cq).resultList
 
-        return result.map { EventSearchDto(id = it.id, imageUrl = it.imageUrl, eventDate = it.eventDate, cep = it.cep) }
+        return result
     }
 }
