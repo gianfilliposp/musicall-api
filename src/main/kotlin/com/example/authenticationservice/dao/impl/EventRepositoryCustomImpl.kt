@@ -21,7 +21,7 @@ class EventRepositoryCustomImpl (
     ): List<EventSearchDto> {
         val cb = em.criteriaBuilder
         val cq = cb.createQuery(Event::class.java)
-        val root = cq.from(EventSearchDto::class.java)
+        val root = cq.from(Event::class.java)
         cq.multiselect(
             root.get<Long>("id"),
             root.get<String>("imageUrl"),
@@ -54,6 +54,6 @@ class EventRepositoryCustomImpl (
 
         val result = em.createQuery(cq).resultList
 
-        return result.map { EventSearchDto(it.id, it.imageUrl, it.eventDate, it.cep) }
+        return result.map { EventSearchDto(id = it.id, imageUrl = it.imageUrl, eventDate = it.eventDate, cep = it.cep) }
     }
 }
