@@ -1,7 +1,6 @@
 package com.example.authenticationservice.dao.impl
 
 import com.example.authenticationservice.dao.EventRepositoryCustom
-import com.example.authenticationservice.dto.EventSearchDto
 import com.example.authenticationservice.model.Event
 import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.parameters.FilterEventsRequest
@@ -22,15 +21,7 @@ class EventRepositoryCustomImpl (
         val cb = em.criteriaBuilder
         val cq = cb.createQuery(Event::class.java)
         val root = cq.from(Event::class.java)
-        cq.multiselect(
-            cb.construct(
-                Event::class.java,
-                cb.construct(EventSearchDto::class.java),
-                root.get<Long>("id"),
-                root.get<String>("imageUrl"),
-                root.get<LocalDate>("eventDate")
-            )
-        ).distinct(true)
+        cq.select(root)
 
         val joinExec = root.join<Event, EventJob>("eventJob")
 
