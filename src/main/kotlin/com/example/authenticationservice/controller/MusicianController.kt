@@ -7,6 +7,7 @@ import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.service.MusicianService
 import com.sun.istack.NotNull
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import org.hibernate.event.service.internal.EventListenerServiceInitiator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -53,7 +54,7 @@ class MusicianController (
     }
 
     @PostMapping("/event")
-    fun findEventsByLocation(req: HttpServletRequest, @RequestBody @Valid filterEventsRequest: FilterEventsRequest) : ResponseEntity<List<EventDto>> {
+    fun findEventsByLocation(req: HttpServletRequest, @RequestBody @Valid filterEventsRequest: FilterEventsRequest) : ResponseEntity<List<EventSearchDto>> {
         val events = musicianService.getEventsByLocation(filterEventsRequest, req)
         println("-----------------------------------")
         println(events.size)
