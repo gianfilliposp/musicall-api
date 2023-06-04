@@ -2,10 +2,7 @@ package com.example.authenticationservice.dao.impl
 
 import com.example.authenticationservice.dao.MusicianRepositoryCustom
 import com.example.authenticationservice.dto.MusicianEventJobDto
-import com.example.authenticationservice.model.Event
-import com.example.authenticationservice.model.EventJob
-import com.example.authenticationservice.model.Musician
-import com.example.authenticationservice.model.MusicianInstrument
+import com.example.authenticationservice.model.*
 import org.springframework.stereotype.Repository
 import javax.persistence.criteria.Predicate
 import javax.persistence.EntityManager
@@ -31,7 +28,7 @@ class MusicianRepositoryImpl (
         val joinExec = root.join<Musician, MusicianInstrument>("musicianInstruments")
 
         val predicates = mutableListOf<Predicate>()
-        predicates.add(cb.equal(joinExec.get<Long>("instrumentId"), instrumentId))
+        predicates.add(cb.equal(joinExec.get<Instrument>("instrument").get<Long>("id"), instrumentId))
 
         cq.where(*predicates.toTypedArray())
 
