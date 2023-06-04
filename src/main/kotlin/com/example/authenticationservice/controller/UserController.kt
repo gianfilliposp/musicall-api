@@ -3,9 +3,11 @@ package com.example.authenticationservice.controller
 import com.example.authenticationservice.dto.JobRequestDto
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
+import com.example.authenticationservice.model.Prospect
 import com.example.authenticationservice.parameters.DeleteUserRequest
 import com.example.authenticationservice.parameters.EmailResetRequest
 import com.example.authenticationservice.parameters.SetEmailRequest
+import com.example.authenticationservice.service.ProspectService
 import com.example.authenticationservice.service.UserService
 import com.sun.istack.NotNull
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.HashMap
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
+import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
 @RestController
@@ -43,6 +46,7 @@ class UserController (
 
         return ResponseEntity.status(200).build()
     }
+
 
     @PatchMapping("/change-email")
     fun setNewEmail(req: HttpServletRequest, @Valid @NotBlank @NotNull @RequestBody setEmailRequest: SetEmailRequest): ResponseEntity<Void> {

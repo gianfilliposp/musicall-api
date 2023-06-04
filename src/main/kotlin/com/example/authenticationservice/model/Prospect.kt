@@ -13,8 +13,19 @@ data class Prospect (
     val email: String,
 
     @Column(nullable = false)
+    val name: String,
+
+    @Column(nullable = false)
     val telefone: String,
 
     @Column(nullable = false)
     val midia: String
-)
+) {
+    constructor() : this (
+            id = 0,
+            name = "",
+            email = "",
+            telefone = "",
+            midia = ""
+    )
+}

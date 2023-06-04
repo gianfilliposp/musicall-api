@@ -1,6 +1,7 @@
 package com.example.authenticationservice.controller
 
 import com.example.authenticationservice.exceptions.ParameterException
+import com.example.authenticationservice.model.Prospect
 import com.example.authenticationservice.parameters.RegisterUserRequest
 import com.example.authenticationservice.parameters.PasswordResetRequest
 import com.example.authenticationservice.parameters.SetPasswordRequest
@@ -16,6 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.example.authenticationservice.parameters.AuthenticationRequest
 import com.example.authenticationservice.service.EmailSenderService
+import com.example.authenticationservice.service.ProspectService
+import com.sun.istack.NotNull
 import org.apache.coyote.Response
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -29,7 +32,8 @@ import javax.validation.constraints.Size
 @RequestMapping("/api")
 class AuthenticationController(
     @Autowired private val authenticationService: AuthenticationService,
-    @Autowired private val emailSenderService : EmailSenderService
+    @Autowired private val emailSenderService : EmailSenderService,
+    @Autowired private val prospectService : ProspectService
 ) {
 
     @PostMapping("/register")
@@ -76,6 +80,13 @@ class AuthenticationController(
         authenticationService.resetPassword(setPasswordRequest.email, setPasswordRequest.password, setPasswordRequest.token);
 
         return ResponseEntity.status(200).build()
+    }
+
+    @GetMapping("/prospect/{email}")
+    fun findProspect(@Valid @NotNull @Email @PathVariable email: String): ResponseEntity<Prospect> {
+        val prospect = prospectService.findProspect(email)
+
+        return ResponseEntity.status(200).body(prospect)
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
