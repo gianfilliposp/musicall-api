@@ -91,4 +91,11 @@ class UserService (
         if (typeUser == TypeUserDto.ORG) organizerService.approveJobRequest(id, jobRequestId)
 
     }
+
+    fun findType(req: HttpServletRequest): TypeUserDto {
+        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val id = jwtTokenProvider.getId(token).toLong()
+        val typeUser = jwtTokenProvider.getType(token)
+        return typeUser
+    }
 }

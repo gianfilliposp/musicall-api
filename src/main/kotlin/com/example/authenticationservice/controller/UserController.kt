@@ -1,6 +1,7 @@
 package com.example.authenticationservice.controller
 
 import com.example.authenticationservice.dto.JobRequestDto
+import com.example.authenticationservice.dto.TypeUserDto
 import com.example.authenticationservice.exceptions.InvalidJwtAuthenticationException
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.model.Prospect
@@ -29,6 +30,12 @@ import javax.validation.constraints.NotBlank
 class UserController (
         @Autowired private val userService : UserService
 ) {
+    @GetMapping("/auth")
+    fun isAuthenticated(req: HttpServletRequest): ResponseEntity<TypeUserDto> {
+        val userType = userService.findType(req)
+
+        return ResponseEntity.status(200).body(userType)
+    }
     @DeleteMapping
     fun deleteUser(req: HttpServletRequest, @RequestBody @Valid deleteUserRequest: DeleteUserRequest) : ResponseEntity<Void> {
         val userDto = userService.deleteUser(req, deleteUserRequest)
