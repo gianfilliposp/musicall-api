@@ -77,6 +77,9 @@ class MusicianService (
 
         var events = eventRepository.findUnfinalizedEventsAfterOrEqual(filterEventsRequest, instrumentsId)
 
+        events.forEach { println(it.eventDate) }
+        events.forEach { println(it.id) }
+
         if (events.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No event was found for you")
 
         var destinations: String = ""
@@ -166,5 +169,11 @@ class MusicianService (
 
         notificationRepository.deleteByJobRequestId(deleteJobRequestDto.id)
         jobRequestRepository.deleteById(deleteJobRequestDto.id)
+    }
+
+    fun findMusicianEventJobDtoByInstrumentId(instrumentId: Long): List<MusicianEventJobDto> {
+        val musicians = musicianRepository.findMusicianByIdAndEventLocation(instrumentId)
+
+        return musicians
     }
 }

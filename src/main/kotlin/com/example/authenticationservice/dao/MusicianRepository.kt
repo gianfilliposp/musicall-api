@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 
-interface MusicianRepository : JpaRepository<Musician, Long> {
+interface MusicianRepository : MusicianRepositoryCustom, JpaRepository<Musician, Long> {
     fun existsByUser(user: User) : Boolean
     fun getByUser(user: User): Musician?
 

@@ -36,13 +36,14 @@ VALUES
   (1, 'My Event - PI', 'sei lá', '64000-000', 2, 'My Complement', '2024-01-18', 2, '00:00:00', false, 'https://images.pexels.com/photos/265947/pexels-photo-265947.jpeg?auto=compress&cs=tinysrgb&w=1600'),
   (1, 'My Event - RJ', 'sei lá', '20000-000', 2, 'My Complement', '2024-01-19', 2, '00:00:00', false, 'https://images.pexels.com/photos/265947/pexels-photo-265947.jpeg?auto=compress&cs=tinysrgb&w=1600'),
   (1, 'My Event - RN', 'sei lá', '59000-000', 2, 'My Complement', '2024-01-20', 2, '00:00:00', false, 'https://images.pexels.com/photos/1652353/pexels-photo-1652353.jpeg?auto=compress&cs=tinysrgb&w=1600'),
-  (1, 'My Event - RS', 'sei lá', '90000-000', 2, 'My Complement', '2024-01-21', 2, '00:00:00', false, 'https://images.pexels.com/photos/1652353/pexels-photo-1652353.jpeg?auto=compress&cs=tinysrgb&w=1600');
+  (1, 'My Event - RS', 'sei lá', '90000-000', 2, 'My Complement', '2024-01-21', 2, '00:00:00', false, 'https://images.pexels.com/photos/1652353/pexels-photo-1652353.jpeg?auto=compress&cs=tinysrgb&w=1600'),
+  (1, 'My Event - RS', 'sei lá', '03366-010', 2, 'My Complement', '2024-01-21', 2, '00:00:00', false, 'https://images.pexels.com/photos/1652353/pexels-photo-1652353.jpeg?auto=compress&cs=tinysrgb&w=1600');
 
 INSERT INTO event_job (event_id, instrument_id, musician_id, payment)
 VALUES
-  (1, 2, NULL, 10.0),
-  (1, 3, NULL, 10.0),
-  (1, 4, NULL, 10.0),
+  (1, 2, 1, 10.0),
+  (1, 3, 1, 10.0),
+  (1, 4, 1, 10.0),
   (1, 5, NULL, 10.0),
   (1, 6, NULL, 10.0),
   (2, 2, NULL, 10.0),
@@ -57,6 +58,12 @@ VALUES
   (3, 6, NULL, 10.0),
   (11, 2, NULL, 10.0),
   (11, 3, NULL, 10.0),
+  (14, 2, NULL, 10.0),
+  (14, 2, NULL, 10.0),
+  (14, 3, NULL, 10.0),
+  (14, 3, NULL, 10.0),
+  (14, 3, NULL, 10.0),
+  (14, 3, NULL, 10.0),
   (11, 3, NULL, 10.0);
 
 INSERT INTO musician_instrument (musician_id, instrument_id) VALUES

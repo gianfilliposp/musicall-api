@@ -4,6 +4,7 @@ import com.example.authenticationservice.dao.EventRepositoryCustom
 import com.example.authenticationservice.dto.EventSearchDto
 import com.example.authenticationservice.model.Event
 import com.example.authenticationservice.model.EventJob
+import com.example.authenticationservice.model.Musician
 import com.example.authenticationservice.parameters.FilterEventsRequest
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -37,6 +38,7 @@ class EventRepositoryCustomImpl (
         val predicates = mutableListOf<Predicate>()
         predicates.add(cb.equal(root.get<Boolean>("finalized"), false))
         predicates.add(cb.greaterThan(root.get<LocalDate>("eventDate"), LocalDate.now()))
+        predicates.add(cb.isNull(joinExec.get<Musician>("musician")))
 
         if (filterEventsRequest.date != null) {
             predicates.add(cb.equal(root.get<LocalDate>("eventDate"), filterEventsRequest.date))

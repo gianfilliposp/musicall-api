@@ -20,9 +20,9 @@ data class EventSearchDto (
     )
 
     constructor(id: Long, imageUrl: String, eventDate: LocalDate, cep: String) : this(
-        id = 0,
+        id = id,
         imageUrl = imageUrl,
-        eventDate = LocalDate.now(),
+        eventDate = eventDate,
         cep = cep,
         distance = 0
     )

@@ -24,7 +24,6 @@ class OrganizerService (
     @Autowired private val jobRequestRepository: JobRequestRepository,
     @Autowired private val notificationRepository: NotificationRepository,
     @Autowired private val eventJobRepository : EventJobRepository,
-    @Autowired private val musicianInstrumentRepository: MusicianInstrumentRepository,
     @Autowired private val musicianService: MusicianService,
     @Autowired private val googleMapsService: GoogleMapsUtils
 ) {
@@ -170,7 +169,8 @@ class OrganizerService (
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val userId = jwtTokenProvider.getId(token).toLong()
         val instrumentIdAndEventCepDto = eventJobRepository.findInstrumentIdAndEventCepByIdAndUserId(eventJobId, userId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You can't search a musician for this event")
-        val musiciansEventJobDto = musicianInstrumentRepository.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId)
+
+        val musiciansEventJobDto = musicianService.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId)
 
         var destinations: String = ""
         musiciansEventJobDto.forEach { destinations+=it.cep + "|"}
