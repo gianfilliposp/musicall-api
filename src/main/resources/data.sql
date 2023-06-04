@@ -12,6 +12,7 @@ INSERT INTO instrument (name) VALUES
 ('Violão'),
 ('Cavaquinho'),
 ('Pandeiro'),
+('Voz'),
 ('Tamborim');
 
 INSERT INTO user (birth_date, confirmation_token, cpf, email, is_confirmed, is_password_reset_requested, name, number_of_events, password, password_reset_token, telephone, type)
