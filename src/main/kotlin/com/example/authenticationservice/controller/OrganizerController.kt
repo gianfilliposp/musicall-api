@@ -60,9 +60,9 @@ class OrganizerController (
         return ResponseEntity.status(200).build()
     }
 
-    @GetMapping("/musician/event-job/{eventJobId}")
-    fun findMusicianByEventLocation(req: HttpServletRequest, @PathVariable("eventJobId") @Valid @NotNull eventJobId: Long) : ResponseEntity<List<MusicianEventJobDto>> {
-        val events = organizerService.findMusicianByEventLocation(req, eventJobId)
+    @PostMapping("/musician/event-job/{eventJobId}")
+    fun findMusicianByEventLocation(req: HttpServletRequest, @Valid @RequestBody filterMusicianRequest: FilterMusicianRequest, @PathVariable("eventJobId") @Valid @NotNull eventJobId: Long) : ResponseEntity<List<MusicianEventJobDto>> {
+        val events = organizerService.findMusicianByEventLocation(req, eventJobId, filterMusicianRequest)
 
         return ResponseEntity.status(200).body(events)
     }

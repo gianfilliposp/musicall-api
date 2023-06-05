@@ -165,18 +165,17 @@ class OrganizerService (
             )
         )
     }
-    fun findMusicianByEventLocation(req: HttpServletRequest, eventJobId: Long): List<MusicianEventJobDto> {
+    fun findMusicianByEventLocation(req: HttpServletRequest, eventJobId: Long, filterMusicianRequest: FilterMusicianRequest): List<MusicianEventJobDto> {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val userId = jwtTokenProvider.getId(token).toLong()
         val instrumentIdAndEventCepDto = eventJobRepository.findInstrumentIdAndEventCepByIdAndUserId(eventJobId, userId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You can't search a musician for this event")
-
-        val musiciansEventJobDto = musicianService.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId)
-
+        val musiciansEventJobDto = musicianService.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId, filterMusicianRequest)
         var destinations: String = ""
-        musiciansEventJobDto.forEach { destinations+=it.cep + "|"}
+
+        musiciansEventJobDto.forEach { destinations+= it.cep + "|" }
         destinations = destinations.dropLast(1)
 
-        val response = googleMapsService.getDistanceMatrix(instrumentIdAndEventCepDto.cep, destinations)
+        val response = googleMapsService.getDistanceMatrix(filterMusicianRequest.cep ?: instrumentIdAndEventCepDto.cep, destinations)
         val mapper = ObjectMapper()
         val data = mapper.readValue(response, Map::class.java)
 

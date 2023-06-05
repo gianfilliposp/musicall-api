@@ -1,34 +1,50 @@
 package com.example.authenticationservice.dao.impl
 
 import com.example.authenticationservice.dao.MusicianRepositoryCustom
+import com.example.authenticationservice.dto.MusicianDto
 import com.example.authenticationservice.dto.MusicianEventJobDto
 import com.example.authenticationservice.model.*
+import com.example.authenticationservice.parameters.FilterMusicianRequest
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 import javax.persistence.criteria.Predicate
 import javax.persistence.EntityManager
+import javax.persistence.Tuple
+import javax.persistence.criteria.Selection
 
 @Repository
 class MusicianRepositoryImpl (
     private val em: EntityManager
 ): MusicianRepositoryCustom {
-    override fun findMusicianByIdAndEventLocation(instrumentId: Long): List<MusicianEventJobDto> {
+    override fun findMusicianByIdAndEventLocation(instrumentId: Long, filterMusicianRequest: FilterMusicianRequest): List<MusicianEventJobDto> {
         val cb = em.criteriaBuilder
         val cq = cb.createQuery(MusicianEventJobDto::class.java)
         val root = cq.from(Musician::class.java)
+        val joinMusicianInstrument = root.join<Musician, MusicianInstrument>("musicianInstruments")
+
         cq.select(
             cb.construct(
                 MusicianEventJobDto::class.java,
                 root.get<Long>("id"),
                 root.get<String>("user").get<String>("name"),
                 root.get<String>("cep"),
-                root.get<String>("imageUrl")
+                root.get<String>("imageUrl"),
+                joinMusicianInstrument.get<Instrument>("instrument").get<String>("name")
             )
         )
 
-        val joinExec = root.join<Musician, MusicianInstrument>("musicianInstruments")
-
         val predicates = mutableListOf<Predicate>()
-        predicates.add(cb.equal(joinExec.get<Instrument>("instrument").get<Long>("id"), instrumentId))
+
+        if (filterMusicianRequest.date != null) {
+            predicates.add(cb.equal(root.get<LocalDate>("eventDate"), filterMusicianRequest.date))
+        }
+
+        if (filterMusicianRequest.instrumentsId != null) {
+            predicates.add(joinMusicianInstrument.get<Long>("instrument").`in`(filterMusicianRequest.instrumentsId))
+        }
+
+
+        predicates.add(cb.equal(joinMusicianInstrument.get<Instrument>("instrument").get<Long>("id"), instrumentId))
 
         cq.where(*predicates.toTypedArray())
 
