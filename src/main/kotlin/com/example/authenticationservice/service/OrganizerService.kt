@@ -9,6 +9,10 @@ import com.example.authenticationservice.security.JwtTokenProvider
 import com.example.authenticationservice.utils.GoogleMapsUtils
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -165,14 +169,14 @@ class OrganizerService (
             )
         )
     }
-    fun findMusicianByEventLocation(req: HttpServletRequest, eventJobId: Long, filterMusicianRequest: FilterMusicianRequest): List<MusicianEventJobDto> {
+    fun findMusicianByEventLocation(req: HttpServletRequest, eventJobId: Long, filterMusicianRequest: FilterMusicianRequest, pageable: Pageable): PageImpl<MusicianEventJobDto> {
         val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
         val userId = jwtTokenProvider.getId(token).toLong()
         val instrumentIdAndEventCepDto = eventJobRepository.findInstrumentIdAndEventCepByIdAndUserId(eventJobId, userId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You can't search a musician for this event")
-        val musiciansEventJobDto = musicianService.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId, filterMusicianRequest)
+        val musiciansEventJobDto = musicianService.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId, filterMusicianRequest, pageable)
         var destinations: String = ""
 
-        musiciansEventJobDto.forEach { destinations+= it.cep + "|" }
+        musiciansEventJobDto.content.forEach { destinations+= it.cep + "|" }
         destinations = destinations.dropLast(1)
 
         val response = googleMapsService.getDistanceMatrix(filterMusicianRequest.cep ?: instrumentIdAndEventCepDto.cep, destinations)
@@ -180,18 +184,21 @@ class OrganizerService (
         val data = mapper.readValue(response, Map::class.java)
 
         val rows = data["rows"] as List<*>
-        for ((rowIndex, row) in rows.withIndex()) {
-            if (row is Map<*, *>) {
-                val elements = row["elements"] as List<*>
-                for ((elementIndex, element) in elements.withIndex()) {
-                    if (element is Map<*, *> && element["status"] as? String == "OK") {
-                        val distance = (element["distance"] as Map<String, Any>)["value"] as Int
-                        musiciansEventJobDto[elementIndex].distance = distance
+
+        musiciansEventJobDto.content.forEach {
+            for ((rowIndex, row) in rows.withIndex()) {
+                if (row is Map<*, *>) {
+                    val elements = row["elements"] as List<*>
+                    for ((elementIndex, element) in elements.withIndex()) {
+                        if (element is Map<*, *> && element["status"] as? String == "OK") {
+                            val distance = (element["distance"] as Map<String, Any>)["value"] as Int
+                            it.distance = distance
+                        }
                     }
                 }
             }
         }
 
-       return musiciansEventJobDto.sortedBy { it.distance }
+       return musiciansEventJobDto
     }
 }

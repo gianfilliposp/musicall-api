@@ -4,11 +4,17 @@ import com.example.authenticationservice.dto.*
 import com.example.authenticationservice.exceptions.ParameterException
 import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.JobRequest
+import com.example.authenticationservice.model.Musician
 import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.service.OrganizerService
 import com.sun.istack.NotNull
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -61,8 +67,14 @@ class OrganizerController (
     }
 
     @PostMapping("/musician/event-job/{eventJobId}")
-    fun findMusicianByEventLocation(req: HttpServletRequest, @Valid @RequestBody filterMusicianRequest: FilterMusicianRequest, @PathVariable("eventJobId") @Valid @NotNull eventJobId: Long) : ResponseEntity<List<MusicianEventJobDto>> {
-        val events = organizerService.findMusicianByEventLocation(req, eventJobId, filterMusicianRequest)
+    fun findMusicianByEventLocation(
+        req: HttpServletRequest,
+        @Valid @RequestBody filterMusicianRequest: FilterMusicianRequest,
+        @PathVariable("eventJobId") @Valid @NotNull eventJobId: Long,
+        @RequestParam("page", defaultValue = "0") page: Int,
+        @RequestParam("size", defaultValue = "10") size: Int
+    ) : ResponseEntity<PageImpl<MusicianEventJobDto>> {
+        val events = organizerService.findMusicianByEventLocation(req, eventJobId, filterMusicianRequest, PageRequest.of(page, size))
 
         return ResponseEntity.status(200).body(events)
     }

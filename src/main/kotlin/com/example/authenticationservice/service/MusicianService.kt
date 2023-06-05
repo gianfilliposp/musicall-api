@@ -10,6 +10,10 @@ import com.example.authenticationservice.parameters.*
 import com.example.authenticationservice.security.JwtTokenProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -172,8 +176,8 @@ class MusicianService (
         jobRequestRepository.deleteById(deleteJobRequestDto.id)
     }
 
-    fun findMusicianEventJobDtoByInstrumentId(instrumentId: Long, filterMusicianRequest: FilterMusicianRequest): List<MusicianEventJobDto> {
-        val musicians = musicianRepository.findMusicianByIdAndEventLocation(instrumentId, filterMusicianRequest)
+    fun findMusicianEventJobDtoByInstrumentId(instrumentId: Long, filterMusicianRequest: FilterMusicianRequest, pageable: Pageable): PageImpl<MusicianEventJobDto> {
+        val musicians = musicianRepository.findMusicianByIdAndEventLocation(instrumentId, filterMusicianRequest, pageable)
 
         return musicians
     }

@@ -3,8 +3,12 @@ package com.example.authenticationservice.dao.impl
 import com.example.authenticationservice.dao.MusicianRepositoryCustom
 import com.example.authenticationservice.dto.MusicianDto
 import com.example.authenticationservice.dto.MusicianEventJobDto
+import com.example.authenticationservice.dto.PageMusicianEventJobDto
 import com.example.authenticationservice.model.*
 import com.example.authenticationservice.parameters.FilterMusicianRequest
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import javax.persistence.criteria.Predicate
@@ -16,7 +20,7 @@ import javax.persistence.criteria.Selection
 class MusicianRepositoryImpl (
     private val em: EntityManager
 ): MusicianRepositoryCustom {
-    override fun findMusicianByIdAndEventLocation(instrumentId: Long, filterMusicianRequest: FilterMusicianRequest): List<MusicianEventJobDto> {
+    override fun findMusicianByIdAndEventLocation(instrumentId: Long, filterMusicianRequest: FilterMusicianRequest, page: Pageable): PageImpl<MusicianEventJobDto> {
         val cb = em.criteriaBuilder
         val cq = cb.createQuery(MusicianEventJobDto::class.java)
         val root = cq.from(Musician::class.java)
@@ -48,6 +52,13 @@ class MusicianRepositoryImpl (
 
         cq.where(*predicates.toTypedArray())
 
-        return em.createQuery(cq).resultList
+        val typedQuery = em.createQuery(cq)
+        val totalSize = typedQuery.resultList.size
+        typedQuery.setFirstResult(page.pageNumber)
+        typedQuery.setMaxResults(page.pageSize)
+
+        val pageImpl = PageImpl(typedQuery.resultList, page, totalSize.toLong())
+
+        return pageImpl
     }
 }
