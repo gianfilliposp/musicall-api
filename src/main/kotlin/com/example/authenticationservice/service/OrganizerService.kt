@@ -176,7 +176,9 @@ class OrganizerService (
         val musiciansEventJobDto = musicianService.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId, filterMusicianRequest, pageable)
         var destinations: String = ""
 
-        musiciansEventJobDto.content.forEach { destinations+= it.cep + "|" }
+        if(musiciansEventJobDto.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No artist was found for you")
+
+        musiciansEventJobDto.forEach { destinations+= it.cep + "|" }
         destinations = destinations.dropLast(1)
 
         val response = googleMapsService.getDistanceMatrix(filterMusicianRequest.cep ?: instrumentIdAndEventCepDto.cep, destinations)
