@@ -7,6 +7,7 @@ import com.example.authenticationservice.model.EventJob
 import com.example.authenticationservice.model.Musician
 import com.example.authenticationservice.parameters.FilterEventsRequest
 import org.springframework.stereotype.Repository
+import java.util.Date
 import java.time.LocalDate
 import javax.persistence.EntityManager
 import javax.persistence.criteria.Predicate
@@ -29,6 +30,7 @@ class EventRepositoryCustomImpl (
                 root.get<Long>("id"),
                 root.get<String>("imageUrl"),
                 root.get<LocalDate>("eventDate"),
+                root.get<Date>("startHour"),
                 root.get<String>("cep")
             )
         ).distinct(true)

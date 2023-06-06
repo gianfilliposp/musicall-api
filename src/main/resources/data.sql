@@ -18,23 +18,23 @@ INSERT INTO instrument (name) VALUES
 INSERT INTO user (birth_date, confirmation_token, cpf, email, is_confirmed, is_password_reset_requested, name, number_of_events, password, password_reset_token, telephone, type)
 VALUES ('2000-01-01', 'c111cf08-a6e8-4611-b624-e1d4c4a45978', '12345678901', 'john.doe@example.com', true, false, 'John', 0, '$2a$10$H9BHHHpnGo2lrMCeGGcRWuZC5Pt9pL9K6dGz3yNCorqw0LoM1l.fS', '', '99999999999', 'ORG'),
        ('2000-01-01', 'c111cf08-a6e8-4611-b624-e1d4c4a45978', '12345678903', 'john2.doe@example.com', true, false, 'John', 0, '$2a$10$IgJaWyQfnW1Vu7huiZ5Ht.hrWb0xKhGWIrTPciOzriBdxslN.4qXK', '', '99919999999', 'MSC'),
-       ('1994-07-21', 's5t7u9v1w3x5', '12345678913', 'musician4@example.com', true, false, 'musician 4', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '99919999989', 'msc'),
-       ('1991-03-17', 'y0z1a2b3c4d5', '12345678914', 'musician5@example.com', true, false, 'musician 5', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '98919999999', 'msc'),
-       ('1988-11-04', 'e6f8g0h2i4j6', '12345678915', 'musician6@example.com', true, false, 'musician 6', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '99919999949', 'msc'),
-       ('1993-02-28', 'k8l0m2n4o6p8', '12345678916', 'musician7@example.com', true, false, 'musician 7', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '99919999929', 'msc'),
-       ('1987-06-12', 'q0r2s4t6u8v0', '12345678917', 'musician8@example.com', true, false, 'musician 8', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '99919999923', 'msc'),
-       ('1996-10-03', 'w2x4y6z8a0b2', '12345678918', 'musician9@example.com', true, false, 'musician 9', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qx', '', '99959999929', 'msc'),
-       ('1999-08-19', 'c4d6e8f0g2h4', '12345678919', 'musician10@example.com', true, false, 'musician 10', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qx', '', '92919999923', 'msc');
+       ('1994-07-21', 's5t7u9v1w3x5', '12345678913', 'musician4@example.com', true, false, 'Roberto Andrade', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '99919999989', 'MSC'),
+       ('1991-03-17', 'y0z1a2b3c4d5', '12345678914', 'musician5@example.com', true, false, 'Erick Mendes', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '98919999999', 'MSC'),
+       ('1988-11-04', 'e6f8g0h2i4j6', '12345678915', 'musician6@example.com', true, false, 'Jefferson Santana', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '99919999949', 'MSC'),
+       ('1993-02-28', 'k8l0m2n4o6p8', '12345678916', 'musician7@example.com', true, false, 'Paula Nobre', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '99919999929', 'MSC'),
+       ('1987-06-12', 'q0r2s4t6u8v0', '12345678917', 'musician8@example.com', true, false, 'Manuel Oliveira', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qxk', '', '99919999923', 'MSC'),
+       ('1996-10-03', 'w2x4y6z8a0b2', '12345678918', 'musician9@example.com', true, false, 'Lívia Anjos', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qx', '', '99959999929', 'MSC'),
+       ('1999-08-19', 'c4d6e8f0g2h4', '12345678919', 'musician10@example.com', true, false, 'Lucas Navasconi', 0, '$2a$10$igjawyqfnw1vu7huiz5ht.hrwb0xkhgwirtpciozribdxsln.4qx', '', '92919999923', 'MSC');
 
 
 INSERT INTO musician (user_id, cep, description, image_url)
-VALUES (2, '03366-010', 'Tá ligado né pai', 'https://images-ext-1.discordapp.net/external/xoznNY--RFbvLjzTXXVBCTw9bJuwe7I77QYhdP5AoSA/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/977971/pexels-photo-977971.jpeg?width=985&height=656'),
-       (3, '03366-010', 'Tá ligado né pai', 'https://images-ext-1.discordapp.net/external/xoznNY--RFbvLjzTXXVBCTw9bJuwe7I77QYhdP5AoSA/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/977971/pexels-photo-977971.jpeg?width=985&height=656'),
-       (4, '03366-010', 'Tá ligado né pai', 'https://images-ext-1.discordapp.net/external/xoznNY--RFbvLjzTXXVBCTw9bJuwe7I77QYhdP5AoSA/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/977971/pexels-photo-977971.jpeg?width=985&height=656'),
-       (5, '03366-010', 'Tá ligado né pai', 'https://images-ext-1.discordapp.net/external/xoznNY--RFbvLjzTXXVBCTw9bJuwe7I77QYhdP5AoSA/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/977971/pexels-photo-977971.jpeg?width=985&height=656'),
-       (6, '03366-010', 'Tá ligado né pai', 'https://images-ext-1.discordapp.net/external/xoznNY--RFbvLjzTXXVBCTw9bJuwe7I77QYhdP5AoSA/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/977971/pexels-photo-977971.jpeg?width=985&height=656'),
-       (7, '03366-010', 'Tá ligado né pai', 'https://images-ext-1.discordapp.net/external/xoznNY--RFbvLjzTXXVBCTw9bJuwe7I77QYhdP5AoSA/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/977971/pexels-photo-977971.jpeg?width=985&height=656'),
-       (8, '03366-010', 'Tá ligado né pai', 'https://images-ext-1.discordapp.net/external/xoznNY--RFbvLjzTXXVBCTw9bJuwe7I77QYhdP5AoSA/%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1260%26h%3D750%26dpr%3D1/https/images.pexels.com/photos/977971/pexels-photo-977971.jpeg?width=985&height=656');
+VALUES (2, '03366-010', 'Tá ligado né pai', 'https://images.pexels.com/photos/977971/pexels-photo-977971.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+       (3, '03366-010', 'Tá ligado né pai', 'https://images.pexels.com/photos/210922/pexels-photo-210922.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+       (4, '03366-010', 'Tá ligado né pai', 'https://images.pexels.com/photos/3771793/pexels-photo-3771793.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+       (5, '03366-010', 'Tá ligado né pai', 'https://images.pexels.com/photos/2531728/pexels-photo-2531728.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+       (6, '03366-010', 'Tá ligado né pai', 'https://images.pexels.com/photos/243989/pexels-photo-243989.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+       (7, '03366-010', 'Tá ligado né pai', 'https://images.pexels.com/photos/1885213/pexels-photo-1885213.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+       (8, '03366-010', 'Tá ligado né pai', 'https://images.pexels.com/photos/325688/pexels-photo-325688.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
 
 INSERT INTO event (user_id, name, about_event, cep, number, complement, event_date, duration_hours, start_hour, finalized, image_url)
 VALUES
@@ -56,8 +56,8 @@ VALUES
 INSERT INTO event_job (event_id, instrument_id, musician_id, payment)
 VALUES
   (1, 2, 1, 10.0),
-  (1, 3, 1, 10.0),
-  (1, 4, 1, 10.0),
+  (1, 3, 2, 10.0),
+  (1, 4, 3, 10.0),
   (1, 5, NULL, 10.0),
   (1, 6, NULL, 10.0),
   (2, 2, NULL, 10.0),
@@ -103,4 +103,4 @@ INSERT INTO notification (job_request_id, notification_type, user_id) VALUES
 (2, 1,1);
 
 INSERT INTO prospect (email, name, telefone, midia) VALUES
-('teste@gmail.com', 'Thiago Silva', '11 92599-5591', 'YOUTUBE')
+('teste@gmail.com', 'Thiago Silva', '11 92599-5591', 'Facebook')
