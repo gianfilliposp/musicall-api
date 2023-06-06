@@ -17,11 +17,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 11
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+          distribution: adopt
 
       - name: Build with Maven
         run: mvn clean install --batch-mode --no-transfer-progress
