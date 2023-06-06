@@ -16,4 +16,12 @@ data class EventJobDto (
             payment = eventJob.payment,
             isAvailable = eventJob.musician == null
     )
+
+        constructor(): this(
+                id = 0,
+                fkEvento = 0,
+                instrumentName = "",
+                payment = 0.0,
+                isAvailable = false
+        )
 }

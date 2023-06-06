@@ -14,6 +14,16 @@ data class CreateEventDto (
         val startHour: Time,
         val durationHours: Int
 ) {
+    constructor(): this (
+            id = 0,
+            name = "",
+            aboutEvent = "",
+            cep = "",
+            number = 0,
+            eventDate = LocalDate.now(),
+            startHour = Time.valueOf("00:00:00"),
+            durationHours = 0
+    )
     constructor(event: Event): this(
             id = event.id,
             name = event.name,
