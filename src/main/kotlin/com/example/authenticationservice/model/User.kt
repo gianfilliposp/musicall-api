@@ -49,7 +49,7 @@ data class User(
         val notifications: MutableList<Notification> = mutableListOf()
 ) {
     var numberOfEvents = 0
-    var isConfirmed = false
+    var isConfirmed = true
     var isPasswordResetRequested = false
     var passwordResetToken = ""
     var newEmail = ""
@@ -66,6 +66,7 @@ data class User(
             email = registerUserRequest.email!!,
             password = BCrypt.hashpw(registerUserRequest.password!!, BCrypt.gensalt()),
             confirmationToken = token
+
     )
 
     constructor() : this(

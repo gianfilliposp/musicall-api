@@ -56,8 +56,8 @@ VALUES
 INSERT INTO event_job (event_id, instrument_id, musician_id, payment)
 VALUES
   (1, 2, 1, 10.0),
-  (1, 3, 1, 10.0),
-  (1, 4, 1, 10.0),
+  (1, 3, 2, 10.0),
+  (1, 4, 3, 10.0),
   (1, 5, NULL, 10.0),
   (1, 6, NULL, 10.0),
   (2, 2, NULL, 10.0),
@@ -103,4 +103,4 @@ INSERT INTO notification (job_request_id, notification_type, user_id) VALUES
 (2, 1,1);
 
 INSERT INTO prospect (email, name, telefone, midia) VALUES
-('teste@gmail.com', 'Thiago Silva', '11 92599-5591', 'YOUTUBE')
+('teste@gmail.com', 'Thiago Silva', '11 92599-5591', 'Facebook')
