@@ -3,7 +3,6 @@ package com.example.authenticationservice.model
 import com.example.authenticationservice.parameters.CreateEventRequest
 import java.sql.Time
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity

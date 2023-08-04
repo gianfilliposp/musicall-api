@@ -32,10 +32,10 @@ class OrganizerService (
     @Autowired private val googleMapsService: GoogleMapsUtils
 ) {
     fun createEvent(createEventRequest: CreateEventRequest, req : HttpServletRequest) : CreateEventDto {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        if (eventRepository.existsByEventDateAndFinalized(createEventRequest.eventDate!!, false)) throw ResponseStatusException(HttpStatus.CONFLICT, "You have already an event at this date")
+        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
+        if (eventRepository.existsByEventDateAndFinalized(createEventRequest.eventDate!!, false)) throw ResponseStatusException(HttpStatus.CONFLICT, "Você já tem um evento nessa data")
 
         val event = Event(createEventRequest, user)
 
@@ -45,9 +45,9 @@ class OrganizerService (
     }
 
     fun createEventJob(createEventJobRequest: CreateEventJobRequest, req: HttpServletRequest): List<EventJobDto> {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val id = jwtTokenProvider.getId(token).toLong()
-        val eventId = eventRepository.findIdByIdAndUserIdAndFinalizedFalse(createEventJobRequest.fkEvent!!, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You cant create jobs for this event")
+        val eventId = eventRepository.findIdByIdAndUserIdAndFinalizedFalse(createEventJobRequest.fkEvent!!, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Você não pode criar jobs para esse evento")
         val instrumentsEventJobIds = createEventJobRequest.jobs!!.map { it.instrumentId }
 
         val instruments = instrumentRepository.findInstrumentDtoByIdIn(instrumentsEventJobIds)
@@ -58,7 +58,7 @@ class OrganizerService (
         val eventJobs = mutableListOf<EventJob>()
         createEventJobRequest.jobs!!.forEach {
             if (instrumentsHash.containsKey(it.instrumentId)) for(i in 1 .. it.quantity) { eventJobs.add(EventJob(Event(eventId), Instrument(id = it.instrumentId, name = instrumentsHash[it.instrumentId]!!.name), it.payment)) }
-            else throw ResponseStatusException(HttpStatus.NOT_FOUND, "Instrument not found")
+            else throw ResponseStatusException(HttpStatus.NOT_FOUND, "Instrumento não encontrado")
         }
 
        eventJobRepository.saveAll(eventJobs)
@@ -67,10 +67,10 @@ class OrganizerService (
 
     @Transactional
     fun deleteEvent(req: HttpServletRequest, deleteEventRequest: DeleteEventRequest) {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário invalido")
         val id = jwtTokenProvider.getId(token).toLong()
 
-        if (!eventRepository.existsByIdAndUserIdAndFinalizedFalse(deleteEventRequest.id!!, id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find this event")
+        if (!eventRepository.existsByIdAndUserIdAndFinalizedFalse(deleteEventRequest.id!!, id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "Evento não encontrado")
 
         notificationRepository.deleteByJobRequestEventJobEventId(deleteEventRequest.id!!)
         jobRequestRepository.deleteByEventJobEventId(deleteEventRequest.id!!)
@@ -79,59 +79,59 @@ class OrganizerService (
 }
 
     fun updateEvent(updateEventRequest: UpdateEventRequest, req: HttpServletRequest): CreateEventDto {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "ResponseStatusException(HttpStatus.NOT_FOUND, \"Usuário não encontrado\")")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        val event = eventRepository.findByIdAndUserAndFinalized(updateEventRequest.id!!, user, false) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find this event")
+        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
+        val event = eventRepository.findByIdAndUserAndFinalized(updateEventRequest.id!!, user, false) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Evento não encontrado")
 
         var hasChanges = false
 
         if (updateEventRequest.name != null) {
-            event.name = if (updateEventRequest.name == event.name) throw ResponseStatusException(HttpStatus.CONFLICT, "The name is the same") else updateEventRequest.name
+            event.name = if (updateEventRequest.name == event.name) throw ResponseStatusException(HttpStatus.CONFLICT, "O nome do evento é o mesmo") else updateEventRequest.name
             hasChanges = true
         }
 
         if (updateEventRequest.imageUrl != null) {
-            event.imageUrl = if (updateEventRequest.imageUrl == event.imageUrl) throw ResponseStatusException(HttpStatus.CONFLICT, "The imageUrl is the same") else updateEventRequest.imageUrl
+            event.imageUrl = if (updateEventRequest.imageUrl == event.imageUrl) throw ResponseStatusException(HttpStatus.CONFLICT, "A url da imagem é a mesma") else updateEventRequest.imageUrl
             hasChanges = true
         }
 
         if (updateEventRequest.aboutEvent != null) {
-            event.aboutEvent = if (updateEventRequest.aboutEvent == event.aboutEvent) throw ResponseStatusException(HttpStatus.CONFLICT, "The aboutEvent is the same") else updateEventRequest.aboutEvent
+            event.aboutEvent = if (updateEventRequest.aboutEvent == event.aboutEvent) throw ResponseStatusException(HttpStatus.CONFLICT, "A descrição do evento é a mesma") else updateEventRequest.aboutEvent
             hasChanges = true
         }
 
         if (updateEventRequest.cep != null) {
-            event.cep = if (updateEventRequest.cep == event.cep) throw ResponseStatusException(HttpStatus.CONFLICT, "The cep is the same") else updateEventRequest.cep
+            event.cep = if (updateEventRequest.cep == event.cep) throw ResponseStatusException(HttpStatus.CONFLICT, "O cep é o mesmo") else updateEventRequest.cep
             hasChanges = true
         }
 
         if (updateEventRequest.number != null) {
-            event.number = if (updateEventRequest.number == event.number) throw ResponseStatusException(HttpStatus.CONFLICT, "The number is the same") else updateEventRequest.number
+            event.number = if (updateEventRequest.number == event.number) throw ResponseStatusException(HttpStatus.CONFLICT, "O número do endereço é o mesmo") else updateEventRequest.number
             hasChanges = true
         }
 
         if (updateEventRequest.complement != null) {
-            event.complement = if (updateEventRequest.complement == event.complement) throw ResponseStatusException(HttpStatus.CONFLICT, "The local is the same") else updateEventRequest.complement
+            event.complement = if (updateEventRequest.complement == event.complement) throw ResponseStatusException(HttpStatus.CONFLICT, "O local é o mesmo") else updateEventRequest.complement
             hasChanges = true
         }
 
         if (updateEventRequest.eventDate != null){
-            event.eventDate = if (updateEventRequest.eventDate == event.eventDate) throw ResponseStatusException(HttpStatus.CONFLICT, "The event date is the same") else updateEventRequest.eventDate
+            event.eventDate = if (updateEventRequest.eventDate == event.eventDate) throw ResponseStatusException(HttpStatus.CONFLICT, "A data do evento é a mesma") else updateEventRequest.eventDate
             hasChanges = true
         }
 
         if (updateEventRequest.startHour != null){
-            event.startHour = if (updateEventRequest.startHour == event.startHour) throw ResponseStatusException(HttpStatus.CONFLICT, "The start hour is the same") else updateEventRequest.startHour
+            event.startHour = if (updateEventRequest.startHour == event.startHour) throw ResponseStatusException(HttpStatus.CONFLICT, "A data de início é a mesma") else updateEventRequest.startHour
             hasChanges = true
         }
 
         if (updateEventRequest.durationHours != null) {
-            event.durationHours = if (updateEventRequest.durationHours == event.durationHours) throw ResponseStatusException(HttpStatus.CONFLICT, "The duration in hours is the same") else updateEventRequest.durationHours
+            event.durationHours = if (updateEventRequest.durationHours == event.durationHours) throw ResponseStatusException(HttpStatus.CONFLICT, "A duração em horas é a mesma") else updateEventRequest.durationHours
             hasChanges = true
         }
 
-        if (!hasChanges) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You don't have any change")
+        if (!hasChanges) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Você não fez nenhuma alteração")
 
         eventRepository.save(event)
 
@@ -140,10 +140,10 @@ class OrganizerService (
 
     @Transactional
     fun deleteEventJob(req: HttpServletRequest, eventJobId: Long?) {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val id = jwtTokenProvider.getId(token).toLong()
 
-        if (!eventJobRepository.existsByIdAndEventUserIdAndEventFinalizedFalse(eventJobId!!, id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find this event job")
+        if (!eventJobRepository.existsByIdAndEventUserIdAndEventFinalizedFalse(eventJobId!!, id)) throw ResponseStatusException(HttpStatus.NOT_FOUND, "Evento não encontrado")
 
         notificationRepository.deleteByJobRequestId(eventJobId!!)
         jobRequestRepository.deleteByEventJobId(eventJobId)
@@ -152,7 +152,7 @@ class OrganizerService (
 
     @Transactional
     fun approveJobRequest(id: Long, jobRequestId: Long?) {
-        val userId = jobRequestRepository.findUserIdByIdAndUserIdAndMusicianConfirmedTrue(jobRequestId!!, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You cannot approve this job request")
+        val userId = jobRequestRepository.findUserIdByIdAndUserIdAndMusicianConfirmedTrue(jobRequestId!!, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Vocẽ não pode aprovar esse job")
         jobRequestRepository.updateOrganizerConfirmedTrueById(jobRequestId)
 
         val user = User()
@@ -170,13 +170,13 @@ class OrganizerService (
         )
     }
     fun findMusicianByEventLocation(req: HttpServletRequest, eventJobId: Long, filterMusicianRequest: FilterMusicianRequest, pageable: Pageable): PageImpl<MusicianEventJobDto> {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val userId = jwtTokenProvider.getId(token).toLong()
-        val instrumentIdAndEventCepDto = eventJobRepository.findInstrumentIdAndEventCepByIdAndUserId(eventJobId, userId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You can't search a musician for this event")
+        val instrumentIdAndEventCepDto = eventJobRepository.findInstrumentIdAndEventCepByIdAndUserId(eventJobId, userId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Você não pode buscar um músico para este evento")
         val musiciansEventJobDto = musicianService.findMusicianEventJobDtoByInstrumentId(instrumentIdAndEventCepDto.instrumentId, filterMusicianRequest, pageable)
         var destinations: String = ""
 
-        if(musiciansEventJobDto.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No artist was found for you")
+        if(musiciansEventJobDto.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "Nenhum músico foi encontrado")
 
         musiciansEventJobDto.forEach { destinations+= it.cep + "|" }
         destinations = destinations.dropLast(1)

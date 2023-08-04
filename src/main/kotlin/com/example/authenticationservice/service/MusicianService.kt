@@ -37,10 +37,10 @@ class MusicianService (
     @Autowired private val googleMapsService: GoogleMapsUtils
 ) {
     fun registerMusician(registerMusicianRequest: RegisterMusicianRequest, req : HttpServletRequest) : MusicianDto {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found")
-        if(musicianRepository.existsByUser(user)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already exists")
+        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
+        if(musicianRepository.existsByUser(user)) throw ResponseStatusException(HttpStatus.CONFLICT, "Usuário não existe")
 
         val musician = Musician(registerMusicianRequest, user)
 
@@ -50,13 +50,13 @@ class MusicianService (
     }
 
     fun registerInstrument(registerInstrumentRequest: RegisterInstrumentRequest, req: HttpServletRequest): List<InstrumentsDto> {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found")
-        val musician : Musician? = musicianRepository.getByUser(user) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as musician")
+        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
+        val musician : Musician? = musicianRepository.getByUser(user) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete seu cadastro como músico")
         val instrumentsOfUser = musicianInstrumentRepository.findByMusician(musician!!).map { it.instrument.id }.toHashSet()
 
-        registerInstrumentRequest.fkInstrument!!.forEach { if (instrumentsOfUser.contains(it)) throw ResponseStatusException(HttpStatus.CONFLICT, "Instrument already registered")}
+        registerInstrumentRequest.fkInstrument!!.forEach { if (instrumentsOfUser.contains(it)) throw ResponseStatusException(HttpStatus.CONFLICT, "Instruento já foi cadastrado")}
 
         val instruments = instrumentRepository.findAll()
         val instrumentMap : HashMap<Long, Instrument> = HashMap()
@@ -66,7 +66,7 @@ class MusicianService (
 
         val musicianInstruments = registerInstrumentRequest.fkInstrument!!.map {
             if (instrumentMap[it] != null) MusicianInstrument(musician = musician!!, instrument = instrumentMap[it]!!)
-            else throw ResponseStatusException(HttpStatus.NOT_FOUND, "Instrument not found")
+            else throw ResponseStatusException(HttpStatus.NOT_FOUND, "Istrumento não encontrado")
         }
 
         musicianInstrumentRepository.saveAll(musicianInstruments)
@@ -74,18 +74,18 @@ class MusicianService (
         return musicianInstruments.map { InstrumentsDto(it.instrument.id, it.instrument.name) }
     }
     fun getEventsByLocation(filterEventsRequest: FilterEventsRequest, req: HttpServletRequest): List<EventSearchDto> {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val id = jwtTokenProvider.getId(token).toLong()
-        val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as a musician")
+        val cep = musicianRepository.findCepByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete seu cadastro como músico")
         val instrumentsId = musicianRepository.findInstrumentIdsByUserId(id)
-        if (instrumentsId.isEmpty()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You need to add instruments first")
+        if (instrumentsId.isEmpty()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Você precisa adicionar algum instrumento primeiro")
 
         var events = eventRepository.findUnfinalizedEventsAfterOrEqual(filterEventsRequest, instrumentsId)
 
         events.forEach { println(it.eventDate) }
         events.forEach { println(it.id) }
 
-        if (events.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "No event was found for you")
+        if (events.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "Nenhum evento foi encontrado")
 
         var destinations: String = ""
         events.forEach { destinations+=it.cep + "|"}
@@ -115,11 +115,11 @@ class MusicianService (
     }
 
     fun updateMusician(updateMusicianRequest: UpdateMusicianRequest, req: HttpServletRequest) {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val id = jwtTokenProvider.getId(token).toLong()
-        val musician = musicianRepository.getMusicianByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found")
+        val musician = musicianRepository.getMusicianByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
 
-        if (updateMusicianRequest.cep.isNullOrBlank() and updateMusicianRequest.description.isNullOrBlank()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "The body is missing information")
+        if (updateMusicianRequest.cep.isNullOrBlank() and updateMusicianRequest.description.isNullOrBlank()) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Faltam informações")
 
         var hasChanges = false
 
@@ -138,25 +138,25 @@ class MusicianService (
             hasChanges = true
         }
 
-        if (!hasChanges) throw ResponseStatusException(HttpStatus.CONFLICT, "The musician info is the same")
+        if (!hasChanges) throw ResponseStatusException(HttpStatus.CONFLICT, "As informações são as mesmas")
 
         musicianRepository.save(musician)
     }
 
     fun createJobRequest(req: HttpServletRequest, createJobRequestRequest: CreateJobRequestRequest) {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inváido")
         val id = jwtTokenProvider.getId(token).toLong()
-        val musician = musicianRepository.findByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as musician")
-        val eventJob = eventJobRepository.getById(createJobRequestRequest.fkEventJob!!) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find this event job")
+        val musician = musicianRepository.findByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete seu cadastro como músico")
+        val eventJob = eventJobRepository.getById(createJobRequestRequest.fkEventJob!!) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Vaga não encontrada")
 
-        if (eventJob.musician != null) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "There is a user registered for this event job")
+        if (eventJob.musician != null) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Já existe alguém ocupando essa vaga")
 
         val musicianInstrumentHash = musician.musicianInstruments.map { it.instrument.id }.toHashSet()
-        if (!musicianInstrumentHash.contains(eventJob.instrument.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You don't play this instrument")
+        if (!musicianInstrumentHash.contains(eventJob.instrument.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Vocẽ não toca esse instrumento")
 
         val jobRequest = JobRequest(eventJob = eventJob, musician = musician, musicianConfirmed = true)
-        if (jobRequestRepository.existsByMusicianIdAndEventId(musician.id, eventJob.event.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already made a request for this job")
-        if (eventJobRepository.existsByEventDateAndMusicianId(eventJob.event.eventDate, musician.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You already have a event in this date")
+        if (jobRequestRepository.existsByMusicianIdAndEventId(musician.id, eventJob.event.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Você já fez uma solicitação para essa vaga")
+        if (eventJobRepository.existsByEventDateAndMusicianId(eventJob.event.eventDate, musician.id)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Você já tem um evento nessa data")
 
 
         jobRequestRepository.save(jobRequest)
@@ -165,12 +165,12 @@ class MusicianService (
 
     @Transactional
     fun deleteJobRequest(req: HttpServletRequest, jobRequestId: Long) {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Tipo de usuário inválido")
         val id = jwtTokenProvider.getId(token).toLong()
-        val musicianId = musicianRepository.findIdByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete your register as musician")
+        val musicianId = musicianRepository.findIdByUserId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Complete seu cadastro como músico")
         val deleteJobRequestDto = jobRequestRepository.findIdAndOrganizerConfirmedByEventJobIdAndMusicianId(jobRequestId, musicianId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "You can't delete this job request")
 
-        if (deleteJobRequestDto.organizerConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "The organizer has already confirmed the job request")
+        if (deleteJobRequestDto.organizerConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "O organizador já confirmou esse vaga")
 
         notificationRepository.deleteByJobRequestId(deleteJobRequestDto.id)
         jobRequestRepository.deleteById(deleteJobRequestDto.id)
