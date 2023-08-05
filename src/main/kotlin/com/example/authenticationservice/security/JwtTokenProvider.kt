@@ -91,15 +91,15 @@ class JwtTokenProvider {
             val claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             val typeToken = getType(token).toString()
 
-            if ((typeUrl == "msc" || typeUrl == "org") && typeToken != typeUrl.toUpperCase()) throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+            if ((typeUrl == "msc" || typeUrl == "org") && typeToken != typeUrl.toUpperCase()) throw ResponseStatusException(HttpStatus.FORBIDDEN, "Token JWT do usuário com função inválida.")
 
             return !claims.body.expiration.before(Date())
         } catch (e: JwtException) {
-            throw InvalidJwtAuthenticationException("Expired or invalid JWT token")
+            throw InvalidJwtAuthenticationException("Token JWT expirado ou inválido")
         } catch (e: IllegalArgumentException) {
-            throw InvalidJwtAuthenticationException("Expired or invalid JWT token")
+            throw InvalidJwtAuthenticationException("Token JWT expirado ou inválido")
         } catch (e : Exception) {
-            throw InvalidJwtAuthenticationException("Invalid role JWT token")
+            throw InvalidJwtAuthenticationException("Token JWT de função inválido")
         }
 
     }

@@ -13,7 +13,7 @@ class ProspectService (
         @Autowired private val prospectRepository: ProspectRepository
 ){
     fun findProspect(email: String?): Prospect {
-        val prospect = prospectRepository.findByEmail(email!!)  ?: throw ResponseStatusException(HttpStatus.NO_CONTENT, "No prospect was found")
+        val prospect = prospectRepository.findByEmail(email!!)  ?: throw ResponseStatusException(HttpStatus.NO_CONTENT, "Não foi encontrado")
 
         return prospect
     }

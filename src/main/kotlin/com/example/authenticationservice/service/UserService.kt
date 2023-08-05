@@ -31,18 +31,18 @@ class UserService (
         @Autowired private val organizerService: OrganizerService
 ) {
     fun deleteUser(req: HttpServletRequest, deleteUserRequest: DeleteUserRequest) {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Token JWT do usuário com a função inválida")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id)?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        if (!BCrypt.checkpw(deleteUserRequest.password!!, user.password)) throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied")
+        val user = userRepository.getById(id)?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
+        if (!BCrypt.checkpw(deleteUserRequest.password!!, user.password)) throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nome de usuário ou senha inválidos")
 
         userRepository.delete(user)
     }
 
     fun requestEmailReset(req: HttpServletRequest, emailRequest: EmailResetRequest): String {
-        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Token JWT do usuário com a função inválida.")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
         user.newEmail = emailRequest.email!!
         user.confirmationToken = UUID.randomUUID().toString()
 
@@ -52,11 +52,11 @@ class UserService (
     }
 
     fun setNewEmail(req: HttpServletRequest, setEmailRequest: SetEmailRequest) {
-        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Token JWT do usuário com a função inválida")
         val id = jwtTokenProvider.getId(token).toLong()
-        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        if (user.confirmationToken != setEmailRequest.token) throw ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token")
-        if (user.email == user.newEmail) throw ResponseStatusException(HttpStatus.CONFLICT, "This is the email already registered")
+        val user = userRepository.getById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
+        if (user.confirmationToken != setEmailRequest.token) throw ResponseStatusException(HttpStatus.FORBIDDEN, "Token inválido")
+        if (user.email == user.newEmail) throw ResponseStatusException(HttpStatus.CONFLICT, "Este e-mail já está cadastrado")
 
         user.email = user.newEmail
         user.confirmationToken = ""
@@ -65,27 +65,27 @@ class UserService (
         userRepository.save(user)
     }
     fun findJobsNotification(req: HttpServletRequest): List<JobRequestDto> {
-        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token  = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Token JWT do usuário com a função inválida")
         val id = jwtTokenProvider.getId(token).toLong()
 
         val notification = notificationRepository.findJobRequestDtoByUserId(id)
-        if (notification.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "There is no notification")
+        if (notification.isEmpty()) throw ResponseStatusException(HttpStatus.NO_CONTENT, "Não há notificação")
 
         return notification
     }
 
     fun deleteJobNotification(req: HttpServletRequest, notificationId: Long?) {
-        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "Token JWT do usuário com a função inválida.")
         val id = jwtTokenProvider.getId(token).toLong()
 
-        val deleteNotificationDto = notificationRepository.findDeleteNotificationDtoByUserIdAndNotificationId(id, notificationId!!, NotificationTypeDto.REQUEST) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found")
+        val deleteNotificationDto = notificationRepository.findDeleteNotificationDtoByUserIdAndNotificationId(id, notificationId!!, NotificationTypeDto.REQUEST) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Notificação não encontrada")
 
         notificationRepository.deleteById(notificationId)
         if (deleteNotificationDto.notificationType == NotificationTypeDto.REQUEST) jobRequestRepository.deleteById(deleteNotificationDto.fkJobRequest)
     }
 
     fun approveJobRequest(req: HttpServletRequest, jobRequestId: Long?) {
-        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "Token JWT do usuário com a função inválida.")
         val id = jwtTokenProvider.getId(token).toLong()
         val typeUser = jwtTokenProvider.getType(token)
         if (typeUser == TypeUserDto.ORG) organizerService.approveJobRequest(id, jobRequestId)
@@ -93,7 +93,7 @@ class UserService (
     }
 
     fun findType(req: HttpServletRequest): TypeUserDto {
-        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "User invalid role JWT token.")
+        val token = jwtTokenProvider.resolveToken(req) ?: throw ResponseStatusException( HttpStatus.FORBIDDEN, "Token JWT do usuário com a função inválida.")
         val id = jwtTokenProvider.getId(token).toLong()
         val typeUser = jwtTokenProvider.getType(token)
         return typeUser

@@ -20,7 +20,7 @@ class AuthenticationService(
     @Autowired internal var jwtTokenProvider: JwtTokenProvider? = null
 
     fun registerUser(registerUserRequest: RegisterUserRequest) : String {
-        if (userRepository.existsByEmailOrCpfOrTelephone(registerUserRequest.email!!, registerUserRequest.cpf!!, registerUserRequest.telephone!!)) throw ResponseStatusException(HttpStatus.CONFLICT, "User already registered", null);
+        if (userRepository.existsByEmailOrCpfOrTelephone(registerUserRequest.email!!, registerUserRequest.cpf!!, registerUserRequest.telephone!!)) throw ResponseStatusException(HttpStatus.CONFLICT, "Usuário já cadastrado", null);
         val token = UUID.randomUUID().toString();
         userRepository.save(User(registerUserRequest, token))
 
@@ -28,10 +28,10 @@ class AuthenticationService(
     }
 
     fun confirmUser(email: String, token: String) {
-        val user = userRepository.getUserByEmail(email) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist")
+        val user = userRepository.getUserByEmail(email) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "O usuário não existe")
 
-        if (user.isConfirmed) throw ResponseStatusException(HttpStatus.CONFLICT, "User already confirmed")
-        if (user.confirmationToken != token) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect confirmation token")
+        if (user.isConfirmed) throw ResponseStatusException(HttpStatus.CONFLICT, "Usuário já confirmado")
+        if (user.confirmationToken != token) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Token de confirmação incorreto")
         user.isConfirmed = true
         user.confirmationToken = ""
 
@@ -39,8 +39,8 @@ class AuthenticationService(
     }
 
     fun requestPasswordReset(email: String) : String {
-        val user = userRepository.getUserByEmail(email) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist")
-        if (!user.isConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User isn't confirmed")
+        val user = userRepository.getUserByEmail(email) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "O usuário não existe")
+        if (!user.isConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "O usuário não foi confirmado")
         user.isPasswordResetRequested = true
         user.passwordResetToken = UUID.randomUUID().toString()
 
@@ -50,10 +50,10 @@ class AuthenticationService(
     }
 
     fun resetPassword(email: String, password: String, token: String) {
-        val user = userRepository.getUserByEmail(email) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist")
-        if (!user.isConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User isn't confirmed")
-        if (!user.isPasswordResetRequested) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Password change hasn't been requested")
-        if (user.passwordResetToken != token) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect password change token")
+        val user = userRepository.getUserByEmail(email) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "O usuário não existe")
+        if (!user.isConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "O usuário não foi confirmado")
+        if (!user.isPasswordResetRequested) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "A alteração da senha não foi solicitada")
+        if (user.passwordResetToken != token) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Token de alteração de senha incorreto")
         user.isPasswordResetRequested = false
         user.passwordResetToken = ""
         user.password = BCrypt.hashpw(password, BCrypt.gensalt());
@@ -62,13 +62,13 @@ class AuthenticationService(
     }
 
     fun getUserWithEmail(email: String): User {
-        return userRepository.getUserByEmail(email) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist")
+        return userRepository.getUserByEmail(email) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "O usuário não existe")
     }
 
     fun login(email: String, password: String, type : TypeUserDto): HashMap<Any, Any> {
-        val user : User = userRepository.getUserByEmailAndType(email, type) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist")
-        if (!user.isConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User isn't confirmed")
-        if (!BCrypt.checkpw(password, user.password)) throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied")
+        val user : User = userRepository.getUserByEmailAndType(email, type) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "O usuário não existe")
+        if (!user.isConfirmed) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "O usuário não foi confirmado")
+        if (!BCrypt.checkpw(password, user.password)) throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nome de usuário ou senha inválidos")
         val token = jwtTokenProvider!!.createToken(user, type)
         val model = HashMap<Any, Any>()
         model["email"] = email
